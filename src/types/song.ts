@@ -25,6 +25,17 @@ export interface Categoria {
   icono?: string;
 }
 
+/** Una misa = 1 canción por categoría (el "librito") */
+export interface Misa {
+  id: string;
+  titulo: string;
+  fecha?: string; // YYYY-MM-DD
+  /** categoriaId → cancionId */
+  seleccion: Record<string, string>;
+  creadoEn: string;
+  actualizadoEn: string;
+}
+
 export const CATEGORIAS_DEFAULT: Categoria[] = [
   { id: "entrada", nombre: "Entrada", orden: 1, icono: "🚪" },
   { id: "senor-ten-piedad", nombre: "Señor ten piedad", orden: 2, icono: "🙏" },

@@ -325,13 +325,13 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
                         className={`
                           px-1.5 py-1 rounded text-lg md:text-xl leading-tight text-center
                           border-0 bg-transparent focus:outline-none focus:ring-2 focus:ring-sky-400
-                          min-w-[2rem] max-w-[14rem]
+                          min-w-[2rem] max-w-[14rem] text-slate-900
                           ${
                             isSelected
-                              ? "bg-sky-500 text-white ring-2 ring-sky-300"
+                              ? "bg-sky-100 ring-2 ring-sky-400"
                               : palabra.acorde
-                                ? "bg-sky-50 text-slate-800"
-                                : "text-slate-800 hover:bg-slate-100"
+                                ? "bg-sky-50"
+                                : "hover:bg-slate-100"
                           }
                         `}
                         style={{

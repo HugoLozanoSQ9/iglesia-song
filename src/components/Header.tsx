@@ -29,13 +29,20 @@ export default function Header() {
           </span>
         </Link>
 
-        <nav className="flex items-center gap-3">
+        <nav className="flex items-center gap-2 sm:gap-3 flex-wrap justify-end">
           <Link
             href="/"
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors
+            className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors
               ${pathname === "/" ? "bg-sky-100 text-sky-800" : "text-slate-600 hover:bg-slate-100"}`}
           >
             Inicio
+          </Link>
+          <Link
+            href="/misa"
+            className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors
+              ${pathname.startsWith("/misa") ? "bg-sky-100 text-sky-800" : "text-slate-600 hover:bg-slate-100"}`}
+          >
+            Libritos
           </Link>
 
           {isAdmin ? (

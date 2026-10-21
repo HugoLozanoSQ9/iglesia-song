@@ -1,7 +1,8 @@
-import { Cancion, Categoria, CATEGORIAS_DEFAULT } from "@/types/song";
+import { Cancion, Categoria, CATEGORIAS_DEFAULT, Misa } from "@/types/song";
 
 const KEY_CANCIONES = "iglesia-canciones";
 const KEY_CATEGORIAS = "iglesia-categorias";
+const KEY_MISAS = "iglesia-misas";
 const KEY_ADMIN = "iglesia-admin-auth";
 
 // ---- Canciones ----
@@ -156,4 +157,48 @@ export function cancionATexto(cancion: Cancion): string {
   });
 
   return `${cancion.titulo}\n${cancion.categoria.toUpperCase()}\n\n${lineasTexto.join("\n\n")}`;
+}
+
+// ---- Misas (librito del día) ----
+
+export function getMisas(): Misa[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const data = localStorage.getItem(KEY_MISAS);
+    return data ? JSON.parse(data) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function getMisa(id: string): Misa | null {
+  return getMisas().find((m) => m.id === id) || null;
+}
+
+export function guardarMisa(misa: Misa): void {
+  const todas = getMisas();
+  const idx = todas.findIndex((m) => m.id === misa.id);
+  const actualizada = { ...misa, actualizadoEn: new Date().toISOString() };
+  if (idx >= 0) {
+    todas[idx] = actualizada;
+  } else {
+    todas.push(actualizada);
+  }
+  localStorage.setItem(KEY_MISAS, JSON.stringify(todas));
+}
+
+export function eliminarMisa(id: string): void {
+  const filtradas = getMisas().filter((m) => m.id !== id);
+  localStorage.setItem(KEY_MISAS, JSON.stringify(filtradas));
+}
+
+export function crearMisaVacia(titulo = "Misa del domingo"): Misa {
+  return {
+    id: generarId(),
+    titulo,
+    fecha: new Date().toISOString().slice(0, 10),
+    seleccion: {},
+    creadoEn: new Date().toISOString(),
+    actualizadoEn: new Date().toISOString(),
+  };
 }
