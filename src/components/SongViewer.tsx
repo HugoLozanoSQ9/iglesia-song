@@ -27,20 +27,15 @@ function LineaAlineada({
     const idx = Math.max(0, Math.min(p.acordeIndex ?? 0, Math.max(texto.length - 1, 0)));
     const ac = p.acorde || "";
 
-    const cArr = Array.from(texto).map(() => " ");
+    let cStr = " ".repeat(Math.max(texto.length, 1));
     if (ac && texto.length > 0) {
-      for (let k = 0; k < ac.length; k++) {
-        if (idx + k < cArr.length) {
-          cArr[idx + k] = ac[k];
-        } else {
-          cArr.push(ac[k]);
-        }
+      cStr = " ".repeat(idx) + ac;
+      if (cStr.length < texto.length) {
+        cStr = cStr.padEnd(texto.length);
       }
     }
-    let cStr = cArr.join("");
     const width = Math.max(cStr.length, texto.length);
-    cStr = cStr.padEnd(width);
-    chordRow += cStr;
+    chordRow += cStr.padEnd(width);
     lyricRow += texto.padEnd(width);
   });
 

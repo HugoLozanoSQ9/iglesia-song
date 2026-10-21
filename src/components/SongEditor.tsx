@@ -420,24 +420,15 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
                     const aidx = palabra.acordeIndex ?? 0;
 
                     return (
-                      <div key={palabraIdx} className="flex flex-col items-stretch">
-                        <span className="flex text-sky-700 font-bold text-xs h-4 leading-none select-none">
-                          {chars.map((_, i) => (
-                            <span
-                              key={i}
-                              className="inline-block text-center"
-                              style={{ width: "1ch" }}
-                            >
-                              {palabra.acorde && i === aidx ? palabra.acorde[0] : "\u00A0"}
-                            </span>
-                          ))}
-                        </span>
-                        {/* resto del acorde si es multi-char, encima a la derecha del índice */}
-                        {palabra.acorde && palabra.acorde.length > 1 && (
-                          <span className="text-[10px] text-sky-600 leading-none -mt-0.5 ml-[1ch] opacity-80">
-                            {/* visual hint only in mono row above first char is enough */}
-                          </span>
-                        )}
+                      <div key={palabraIdx} className="relative flex flex-col items-stretch font-mono">
+                        <div
+                          className="h-4 text-sky-700 font-bold text-xs leading-none select-none whitespace-pre overflow-visible"
+                          aria-hidden
+                        >
+                          {palabra.acorde
+                            ? " ".repeat(aidx) + palabra.acorde
+                            : " "}
+                        </div>
 
                         <input
                           type="text"
@@ -451,7 +442,7 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
                           onClick={() => selectWord(lineaIdx, palabraIdx)}
                           onKeyDown={(e) => handleKeyDown(e, lineaIdx, palabraIdx)}
                           className={`
-                            px-0.5 py-1 rounded text-lg leading-tight text-center font-mono
+                            px-0.5 py-1 rounded text-lg leading-tight text-left font-mono
                             border-0 bg-transparent focus:outline-none focus:ring-2 focus:ring-sky-400
                             min-w-[2rem] text-slate-900
                             ${
