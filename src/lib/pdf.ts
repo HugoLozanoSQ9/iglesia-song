@@ -16,13 +16,12 @@ async function loadJsPDF() {
 }
 
 /**
- * Dibuja una canción alineando cada palabra en columna:
- * acorde arriba, letra abajo (igual que el editor / vista pública).
+ * Alinea el acorde sobre la letra indicada por acordeIndex (no siempre al inicio).
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function drawSong(doc: any, cancion: Cancion, startY: number, pageWidth: number, margin: number): number {
   let y = startY;
-  const gap = 2.5; // mm entre columnas
+  const gapWords = 2.2;
   const usableWidth = pageWidth - margin * 2;
 
   doc.setFont("helvetica", "bold");
@@ -41,34 +40,25 @@ function drawSong(doc: any, cancion: Cancion, startY: number, pageWidth: number,
   y += 4;
 
   for (const linea of cancion.lineas) {
-    // Medir ancho de cada columna = max(acorde, texto)
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(9);
-    const chordWidths = linea.palabras.map((p) =>
-      p.acorde ? doc.getTextWidth(p.acorde) : 0
-    );
-
     doc.setFont("helvetica", "normal");
     doc.setFontSize(12);
-    const textWidths = linea.palabras.map((p) =>
-      doc.getTextWidth(p.texto || " ")
+
+    // Ancho de cada palabra (texto completo)
+    const wordWidths = linea.palabras.map((p) =>
+      Math.max(doc.getTextWidth(p.texto || " "), 3)
     );
 
-    const colWidths = linea.palabras.map((_, i) =>
-      Math.max(chordWidths[i], textWidths[i], 3)
-    );
-
-    // Si la línea no cabe, partir en sub-líneas
+    // Partir línea si no cabe
     const rows: number[][] = [[]];
-    let rowWidth = 0;
+    let rowW = 0;
     linea.palabras.forEach((_, i) => {
-      const w = colWidths[i] + gap;
-      if (rowWidth + w > usableWidth && rows[rows.length - 1].length > 0) {
+      const w = wordWidths[i] + gapWords;
+      if (rowW + w > usableWidth && rows[rows.length - 1].length > 0) {
         rows.push([]);
-        rowWidth = 0;
+        rowW = 0;
       }
       rows[rows.length - 1].push(i);
-      rowWidth += w;
+      rowW += w;
     });
 
     for (const indices of rows) {
@@ -77,21 +67,31 @@ function drawSong(doc: any, cancion: Cancion, startY: number, pageWidth: number,
         y = margin;
       }
 
-      // Fila de acordes
+      // Acordes: posición X = inicio de palabra + ancho de las letras previas al índice
       let x = margin;
       doc.setFont("helvetica", "bold");
       doc.setFontSize(9);
       doc.setTextColor(14, 116, 144);
+
       for (const i of indices) {
         const p = linea.palabras[i];
         if (p.acorde) {
-          doc.text(p.acorde, x, y);
+          const texto = p.texto || "";
+          const idx = Math.max(0, Math.min(p.acordeIndex ?? 0, Math.max(texto.length - 1, 0)));
+          // Ancho aproximado de las letras anteriores al índice
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(12);
+          const prefix = texto.slice(0, idx);
+          const prefixW = prefix ? doc.getTextWidth(prefix) : 0;
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(9);
+          doc.text(p.acorde, x + prefixW, y);
         }
-        x += colWidths[i] + gap;
+        x += wordWidths[i] + gapWords;
       }
       y += 5;
 
-      // Fila de letra
+      // Letra
       x = margin;
       doc.setFont("helvetica", "normal");
       doc.setFontSize(12);
@@ -99,18 +99,17 @@ function drawSong(doc: any, cancion: Cancion, startY: number, pageWidth: number,
       for (const i of indices) {
         const p = linea.palabras[i];
         doc.text(p.texto || "", x, y);
-        x += colWidths[i] + gap;
+        x += wordWidths[i] + gapWords;
       }
       y += 8;
     }
 
-    y += 2; // espacio entre líneas de la canción
+    y += 2;
   }
 
   return y + 4;
 }
 
-/** PDF de una sola canción — solo desde botón en zona pública */
 export async function descargarCancionPDF(cancion: Cancion) {
   const jsPDF = await loadJsPDF();
   if (!jsPDF) return;
@@ -140,7 +139,6 @@ export async function descargarCancionPDF(cancion: Cancion) {
   doc.save(`${nombre}.pdf`);
 }
 
-/** PDF del librito de la misa */
 export async function descargarMisaPDF(misa: Misa) {
   const jsPDF = await loadJsPDF();
   if (!jsPDF) return;

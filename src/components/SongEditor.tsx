@@ -97,7 +97,7 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
   };
 
   const assignChord = useCallback(
-    (acorde: string) => {
+    (acorde: string, index?: number) => {
       if (!selectedWord) return;
       const { lineaIdx, palabraIdx } = selectedWord;
       const nuevasLineas = cancion.lineas.map((linea, li) => {
@@ -105,7 +105,15 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
         return {
           palabras: linea.palabras.map((p, pi) => {
             if (pi !== palabraIdx) return p;
-            return { ...p, acorde: acorde || undefined };
+            if (!acorde) {
+              return { texto: p.texto };
+            }
+            const maxIdx = Math.max(0, (p.texto || "").length - 1);
+            const acordeIndex =
+              index !== undefined
+                ? Math.max(0, Math.min(index, maxIdx))
+                : p.acordeIndex ?? 0;
+            return { ...p, acorde, acordeIndex };
           }),
         };
       });
@@ -114,6 +122,14 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
     },
     [selectedWord, cancion, applyChange]
   );
+
+  const setAcordeIndex = (index: number) => {
+    if (!selectedWord) return;
+    const { lineaIdx, palabraIdx } = selectedWord;
+    const p = cancion.lineas[lineaIdx]?.palabras[palabraIdx];
+    if (!p?.acorde) return;
+    assignChord(p.acorde, index);
+  };
 
   const applyAcordeInput = () => {
     assignChord(acordeInput.trim());
@@ -488,16 +504,48 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
             </div>
 
             {selectedWord ? (
-              <p className="mt-2 text-sm text-sky-700">
-                Seleccionada:{" "}
-                <strong>
-                  {cancion.lineas[selectedWord.lineaIdx]?.palabras[selectedWord.palabraIdx]?.texto ||
-                    "(vacía)"}
-                </strong>
-              </p>
+              <div className="mt-3 space-y-2">
+                <p className="text-sm text-sky-700">
+                  Palabra:{" "}
+                  <strong>
+                    {cancion.lineas[selectedWord.lineaIdx]?.palabras[selectedWord.palabraIdx]?.texto ||
+                      "(vacía)"}
+                  </strong>
+                  {" — "}elige la <strong>letra</strong> donde va el acorde:
+                </p>
+                <div className="flex flex-wrap gap-1">
+                  {Array.from(
+                    cancion.lineas[selectedWord.lineaIdx]?.palabras[selectedWord.palabraIdx]
+                      ?.texto || " "
+                  ).map((ch, i) => {
+                    const p =
+                      cancion.lineas[selectedWord.lineaIdx]?.palabras[selectedWord.palabraIdx];
+                    const active = (p?.acordeIndex ?? 0) === i;
+                    return (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => setAcordeIndex(i)}
+                        className={`min-w-[2rem] px-2 py-1.5 rounded-lg font-mono text-lg border-2 transition-all
+                          ${
+                            active
+                              ? "border-sky-500 bg-sky-100 text-sky-900 ring-2 ring-sky-300"
+                              : "border-slate-200 bg-white text-slate-800 hover:border-sky-300"
+                          }`}
+                        title={`Colocar acorde sobre la letra "${ch}"`}
+                      >
+                        <span className="block text-[10px] text-sky-600 h-3 leading-none">
+                          {active && p?.acorde ? p.acorde : " "}
+                        </span>
+                        {ch}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             ) : (
               <p className="mt-2 text-sm text-slate-500">
-                Haz clic en una palabra para asignarle un acorde.
+                Haz clic en una palabra, asigna un acorde y elige la letra exacta donde debe ir.
               </p>
             )}
           </>
@@ -547,14 +595,21 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
                     return (
                       <div
                         key={palabraIdx}
-                        className="flex flex-col items-center min-w-[2.5rem]"
+                        className="flex flex-col items-stretch min-w-[2.5rem]"
                       >
-                        <span
-                          className={`text-sm font-mono font-bold h-6 leading-6 select-none pointer-events-none
-                            ${palabra.acorde ? "text-sky-700" : "text-transparent"}
-                          `}
-                        >
-                          {palabra.acorde || "·"}
+                        {/* Acorde alineado a la letra (acordeIndex) */}
+                        <span className="flex font-mono font-bold text-sm h-5 leading-none select-none pointer-events-none text-sky-700">
+                          {Array.from(palabra.texto || " ").map((_, i) => (
+                            <span
+                              key={i}
+                              className="inline-block text-center"
+                              style={{ width: "1ch", minWidth: "0.55em" }}
+                            >
+                              {palabra.acorde && i === (palabra.acordeIndex ?? 0)
+                                ? palabra.acorde
+                                : " "}
+                            </span>
+                          ))}
                         </span>
 
                         <input
@@ -569,7 +624,7 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
                           onClick={() => selectWord(lineaIdx, palabraIdx)}
                           onKeyDown={(e) => handleKeyDown(e, lineaIdx, palabraIdx)}
                           className={`
-                            px-1.5 py-1 rounded text-lg md:text-xl leading-tight text-center
+                            px-0.5 py-1 rounded text-lg md:text-xl leading-tight text-center
                             border-0 bg-transparent focus:outline-none focus:ring-2 focus:ring-sky-400
                             min-w-[2rem] max-w-[14rem] text-slate-900
                             ${

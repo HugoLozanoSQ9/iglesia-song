@@ -1,6 +1,8 @@
 export interface Palabra {
   texto: string;
   acorde?: string;
+  /** Índice de la letra (0-based) donde se alinea el acorde. Por defecto 0 = inicio. */
+  acordeIndex?: number;
 }
 
 export interface Linea {

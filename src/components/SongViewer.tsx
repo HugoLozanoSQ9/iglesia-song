@@ -9,6 +9,50 @@ interface SongViewerProps {
   showDownload?: boolean;
 }
 
+/** Renderiza una palabra con el acorde encima de la letra indicada por acordeIndex */
+function PalabraConAcorde({
+  texto,
+  acorde,
+  acordeIndex = 0,
+}: {
+  texto: string;
+  acorde?: string;
+  acordeIndex?: number;
+}) {
+  const chars = Array.from(texto || " ");
+  const idx = Math.max(0, Math.min(acordeIndex, Math.max(chars.length - 1, 0)));
+
+  return (
+    <span className="inline-flex flex-col items-stretch mx-0.5">
+      {/* Fila de acordes: un slot por letra */}
+      <span className="flex font-mono font-bold text-sky-700 text-sm md:text-base leading-none h-5 mb-0.5 select-none">
+        {chars.map((_, i) => (
+          <span
+            key={i}
+            className="inline-block text-center"
+            style={{ width: "1ch", minWidth: "0.55em" }}
+          >
+            {acorde && i === idx ? acorde : "\u00A0"}
+          </span>
+        ))}
+        {/* Si el acorde es más ancho que una letra, no comprimir: dejar que sobresalga a la derecha del slot */}
+      </span>
+      {/* Letra */}
+      <span className="text-xl md:text-2xl text-slate-800 leading-tight tracking-normal">
+        {chars.map((ch, i) => (
+          <span
+            key={i}
+            className="inline-block text-center"
+            style={{ width: "1ch", minWidth: "0.55em" }}
+          >
+            {ch}
+          </span>
+        ))}
+      </span>
+    </span>
+  );
+}
+
 export default function SongViewer({ cancion, showDownload = true }: SongViewerProps) {
   const handleDownloadPDF = async () => {
     await descargarCancionPDF(cancion);
@@ -30,32 +74,17 @@ export default function SongViewer({ cancion, showDownload = true }: SongViewerP
         {cancion.autor && <p className="text-slate-500">Autor: {cancion.autor}</p>}
       </div>
 
-      {/* Misma estructura que el editor: cada palabra es una columna (acorde arriba, letra abajo) */}
       <div className="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-sm overflow-x-auto">
         <div className="space-y-6">
           {cancion.lineas.map((linea, idx) => (
-            <div key={idx} className="flex flex-wrap gap-x-3 gap-y-1 items-end">
+            <div key={idx} className="flex flex-wrap items-end gap-x-2 gap-y-1">
               {linea.palabras.map((p, pi) => (
-                <div
+                <PalabraConAcorde
                   key={pi}
-                  className="flex flex-col items-start"
-                  style={{
-                    minWidth: `${Math.max(
-                      (p.texto || " ").length,
-                      (p.acorde || " ").length
-                    )}ch`,
-                  }}
-                >
-                  <span
-                    className="font-mono font-bold text-sky-700 text-sm md:text-base leading-none h-5 mb-1"
-                    style={{ minHeight: "1.25rem" }}
-                  >
-                    {p.acorde || "\u00A0"}
-                  </span>
-                  <span className="text-xl md:text-2xl text-slate-800 leading-tight whitespace-nowrap">
-                    {p.texto}
-                  </span>
-                </div>
+                  texto={p.texto}
+                  acorde={p.acorde}
+                  acordeIndex={p.acordeIndex ?? 0}
+                />
               ))}
             </div>
           ))}

@@ -139,25 +139,33 @@ export function textoALineas(texto: string): { palabras: { texto: string }[] }[]
     }));
 }
 
-/** Exporta canción a formato texto legible (acordes arriba) */
+/** Exporta canción a texto: acorde encima de la letra (acordeIndex) */
 export function cancionATexto(cancion: Cancion): string {
   const lineasTexto = cancion.lineas.map((linea) => {
-    const acordes: string[] = [];
-    const letras: string[] = [];
-
+    const cParts: string[] = [];
+    const lParts: string[] = [];
     linea.palabras.forEach((p) => {
-      const ancho = Math.max(p.texto.length, (p.acorde || "").length);
-      acordes.push((p.acorde || "").padEnd(ancho));
-      letras.push(p.texto.padEnd(ancho));
+      const texto = p.texto || "";
+      const idx = Math.max(0, Math.min(p.acordeIndex ?? 0, Math.max(texto.length - 1, 0)));
+      let chordLine = " ".repeat(Math.max(texto.length, 1));
+      if (p.acorde) {
+        const ac = p.acorde;
+        const before = chordLine.substring(0, idx);
+        const after = chordLine.substring(idx + ac.length);
+        chordLine = (before + ac + after).padEnd(Math.max(texto.length, idx + ac.length));
+      }
+      const width = Math.max(texto.length, chordLine.length);
+      cParts.push(chordLine.padEnd(width));
+      lParts.push(texto.padEnd(width));
     });
-
-    const lineaAcordes = acordes.join(" ").trimEnd();
-    const lineaLetras = letras.join(" ").trimEnd();
-    return lineaAcordes ? `${lineaAcordes}\n${lineaLetras}` : lineaLetras;
+    const lineaAcordes = cParts.join(" ").trimEnd();
+    const lineaLetras = lParts.join(" ").trimEnd();
+    return lineaAcordes.trim() ? `${lineaAcordes}\n${lineaLetras}` : lineaLetras;
   });
 
   return `${cancion.titulo}\n${cancion.categoria.toUpperCase()}\n\n${lineasTexto.join("\n\n")}`;
 }
+
 
 // ---- Misas (librito del día) ----
 
