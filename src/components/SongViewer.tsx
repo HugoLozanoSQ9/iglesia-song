@@ -9,47 +9,48 @@ interface SongViewerProps {
   showDownload?: boolean;
 }
 
-/** Renderiza una palabra con el acorde encima de la letra indicada por acordeIndex */
-function PalabraConAcorde({
-  texto,
-  acorde,
-  acordeIndex = 0,
+/** Monoespaciado: el acorde cae sobre la letra exacta (acordeIndex). */
+function LineaAlineada({
+  palabras,
 }: {
-  texto: string;
-  acorde?: string;
-  acordeIndex?: number;
+  palabras: { texto: string; acorde?: string; acordeIndex?: number }[];
 }) {
-  const chars = Array.from(texto || " ");
-  const idx = Math.max(0, Math.min(acordeIndex, Math.max(chars.length - 1, 0)));
+  let chordRow = "";
+  let lyricRow = "";
+
+  palabras.forEach((p, wi) => {
+    if (wi > 0) {
+      chordRow += " ";
+      lyricRow += " ";
+    }
+    const texto = p.texto || "";
+    const idx = Math.max(0, Math.min(p.acordeIndex ?? 0, Math.max(texto.length - 1, 0)));
+    const ac = p.acorde || "";
+
+    const cArr = Array.from(texto).map(() => " ");
+    if (ac && texto.length > 0) {
+      for (let k = 0; k < ac.length; k++) {
+        if (idx + k < cArr.length) {
+          cArr[idx + k] = ac[k];
+        } else {
+          cArr.push(ac[k]);
+        }
+      }
+    }
+    let cStr = cArr.join("");
+    const width = Math.max(cStr.length, texto.length);
+    cStr = cStr.padEnd(width);
+    chordRow += cStr;
+    lyricRow += texto.padEnd(width);
+  });
 
   return (
-    <span className="inline-flex flex-col items-stretch mx-0.5">
-      {/* Fila de acordes: un slot por letra */}
-      <span className="flex font-mono font-bold text-sky-700 text-sm md:text-base leading-none h-5 mb-0.5 select-none">
-        {chars.map((_, i) => (
-          <span
-            key={i}
-            className="inline-block text-center"
-            style={{ width: "1ch", minWidth: "0.55em" }}
-          >
-            {acorde && i === idx ? acorde : "\u00A0"}
-          </span>
-        ))}
-        {/* Si el acorde es más ancho que una letra, no comprimir: dejar que sobresalga a la derecha del slot */}
-      </span>
-      {/* Letra */}
-      <span className="text-xl md:text-2xl text-slate-800 leading-tight tracking-normal">
-        {chars.map((ch, i) => (
-          <span
-            key={i}
-            className="inline-block text-center"
-            style={{ width: "1ch", minWidth: "0.55em" }}
-          >
-            {ch}
-          </span>
-        ))}
-      </span>
-    </span>
+    <div className="font-mono text-base md:text-lg leading-snug whitespace-pre overflow-x-auto">
+      <div className="text-sky-700 font-bold text-sm md:text-base min-h-[1.25rem]">
+        {chordRow.trimEnd() || "\u00A0"}
+      </div>
+      <div className="text-slate-800">{lyricRow.trimEnd()}</div>
+    </div>
   );
 }
 
@@ -74,19 +75,10 @@ export default function SongViewer({ cancion, showDownload = true }: SongViewerP
         {cancion.autor && <p className="text-slate-500">Autor: {cancion.autor}</p>}
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-sm overflow-x-auto">
-        <div className="space-y-6">
+      <div className="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-sm">
+        <div className="space-y-5">
           {cancion.lineas.map((linea, idx) => (
-            <div key={idx} className="flex flex-wrap items-end gap-x-2 gap-y-1">
-              {linea.palabras.map((p, pi) => (
-                <PalabraConAcorde
-                  key={pi}
-                  texto={p.texto}
-                  acorde={p.acorde}
-                  acordeIndex={p.acordeIndex ?? 0}
-                />
-              ))}
-            </div>
+            <LineaAlineada key={idx} palabras={linea.palabras} />
           ))}
         </div>
       </div>
