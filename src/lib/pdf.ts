@@ -1,16 +1,30 @@
 "use client";
 
-import { jsPDF } from "jspdf";
-import { Cancion, Categoria, Misa } from "@/types/song";
+import { Cancion, Misa } from "@/types/song";
 import { getCancion, getCategorias } from "@/lib/storage";
 
-function drawSong(doc: jsPDF, cancion: Cancion, startY: number, pageWidth: number, margin: number): number {
-  let y = startY;
-  const maxWidth = pageWidth - margin * 2;
-  const lineHeight = 7;
-  const chordHeight = 5;
+async function loadJsPDF() {
+  try {
+    const mod = await import("jspdf");
+    return mod.jsPDF;
+  } catch {
+    alert(
+      "Falta instalar jspdf.\n\nEn la carpeta del proyecto ejecuta:\n\nnpm install jspdf\n\nLuego reinicia: npm run dev"
+    );
+    return null;
+  }
+}
 
-  // Título
+/**
+ * Dibuja una canción alineando cada palabra en columna:
+ * acorde arriba, letra abajo (igual que el editor / vista pública).
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function drawSong(doc: any, cancion: Cancion, startY: number, pageWidth: number, margin: number): number {
+  let y = startY;
+  const gap = 2.5; // mm entre columnas
+  const usableWidth = pageWidth - margin * 2;
+
   doc.setFont("helvetica", "bold");
   doc.setFontSize(14);
   doc.setTextColor(30, 41, 59);
@@ -24,63 +38,87 @@ function drawSong(doc: jsPDF, cancion: Cancion, startY: number, pageWidth: numbe
     doc.text(`Tonalidad: ${cancion.tonalidad}`, margin, y);
     y += 6;
   }
-
   y += 4;
-  doc.setTextColor(15, 23, 42);
 
   for (const linea of cancion.lineas) {
-    if (y > 270) {
-      doc.addPage();
-      y = margin;
-    }
-
-    // Acordes
-    let x = margin;
+    // Medir ancho de cada columna = max(acorde, texto)
     doc.setFont("helvetica", "bold");
     doc.setFontSize(9);
-    doc.setTextColor(14, 116, 144); // sky-700
+    const chordWidths = linea.palabras.map((p) =>
+      p.acorde ? doc.getTextWidth(p.acorde) : 0
+    );
 
-    for (const p of linea.palabras) {
-      const chord = p.acorde || "";
-      const wordW = Math.max(
-        doc.getTextWidth(p.texto || " "),
-        doc.getTextWidth(chord || " ")
-      );
-      if (chord) {
-        doc.text(chord, x, y);
-      }
-      x += wordW + 3;
-    }
-    y += chordHeight;
-
-    // Letra
-    x = margin;
     doc.setFont("helvetica", "normal");
     doc.setFontSize(12);
-    doc.setTextColor(15, 23, 42);
+    const textWidths = linea.palabras.map((p) =>
+      doc.getTextWidth(p.texto || " ")
+    );
 
-    for (const p of linea.palabras) {
-      const chord = p.acorde || "";
-      const wordW = Math.max(
-        doc.getTextWidth(p.texto || " "),
-        doc.getTextWidth(chord || " ")
-      );
-      doc.text(p.texto || "", x, y);
-      x += wordW + 3;
+    const colWidths = linea.palabras.map((_, i) =>
+      Math.max(chordWidths[i], textWidths[i], 3)
+    );
+
+    // Si la línea no cabe, partir en sub-líneas
+    const rows: number[][] = [[]];
+    let rowWidth = 0;
+    linea.palabras.forEach((_, i) => {
+      const w = colWidths[i] + gap;
+      if (rowWidth + w > usableWidth && rows[rows.length - 1].length > 0) {
+        rows.push([]);
+        rowWidth = 0;
+      }
+      rows[rows.length - 1].push(i);
+      rowWidth += w;
+    });
+
+    for (const indices of rows) {
+      if (y > 275) {
+        doc.addPage();
+        y = margin;
+      }
+
+      // Fila de acordes
+      let x = margin;
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9);
+      doc.setTextColor(14, 116, 144);
+      for (const i of indices) {
+        const p = linea.palabras[i];
+        if (p.acorde) {
+          doc.text(p.acorde, x, y);
+        }
+        x += colWidths[i] + gap;
+      }
+      y += 5;
+
+      // Fila de letra
+      x = margin;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(12);
+      doc.setTextColor(15, 23, 42);
+      for (const i of indices) {
+        const p = linea.palabras[i];
+        doc.text(p.texto || "", x, y);
+        x += colWidths[i] + gap;
+      }
+      y += 8;
     }
-    y += lineHeight + 2;
+
+    y += 2; // espacio entre líneas de la canción
   }
 
-  return y + 6;
+  return y + 4;
 }
 
-/** PDF de una sola canción */
-export function descargarCancionPDF(cancion: Cancion) {
+/** PDF de una sola canción — solo desde botón en zona pública */
+export async function descargarCancionPDF(cancion: Cancion) {
+  const jsPDF = await loadJsPDF();
+  if (!jsPDF) return;
+
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const margin = 18;
   const pageWidth = doc.internal.pageSize.getWidth();
 
-  // Encabezado
   doc.setFillColor(14, 165, 233);
   doc.rect(0, 0, pageWidth, 12, "F");
   doc.setFont("helvetica", "bold");
@@ -88,10 +126,8 @@ export function descargarCancionPDF(cancion: Cancion) {
   doc.setTextColor(255, 255, 255);
   doc.text("Cancionero Parroquial", margin, 8);
 
-  let y = 24;
-  y = drawSong(doc, cancion, y, pageWidth, margin);
+  drawSong(doc, cancion, 24, pageWidth, margin);
 
-  // Pie
   const pageCount = doc.getNumberOfPages();
   for (let i = 1; i <= pageCount; i++) {
     doc.setPage(i);
@@ -104,14 +140,16 @@ export function descargarCancionPDF(cancion: Cancion) {
   doc.save(`${nombre}.pdf`);
 }
 
-/** PDF del librito de la misa (todas las canciones seleccionadas en orden) */
-export function descargarMisaPDF(misa: Misa) {
+/** PDF del librito de la misa */
+export async function descargarMisaPDF(misa: Misa) {
+  const jsPDF = await loadJsPDF();
+  if (!jsPDF) return;
+
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const margin = 16;
   const pageWidth = doc.internal.pageSize.getWidth();
   const categorias = getCategorias().sort((a, b) => a.orden - b.orden);
 
-  // Portada
   doc.setFillColor(14, 165, 233);
   doc.rect(0, 0, pageWidth, 40, "F");
   doc.setFont("helvetica", "bold");
@@ -130,21 +168,17 @@ export function descargarMisaPDF(misa: Misa) {
   doc.text("Orden de la misa", margin, y);
   y += 8;
 
-  // Índice
   for (const cat of categorias) {
     const cancionId = misa.seleccion[cat.id];
     const cancion = cancionId ? getCancion(cancionId) : null;
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     doc.setTextColor(71, 85, 105);
-    const label = `${cat.icono || ""} ${cat.nombre}`;
-    const titulo = cancion ? cancion.titulo : "— sin seleccionar —";
-    doc.text(label, margin, y);
-    doc.text(titulo, margin + 55, y);
+    doc.text(`${cat.icono || ""} ${cat.nombre}`, margin, y);
+    doc.text(cancion ? cancion.titulo : "— sin seleccionar —", margin + 55, y);
     y += 6;
   }
 
-  // Canciones completas
   for (const cat of categorias) {
     const cancionId = misa.seleccion[cat.id];
     if (!cancionId) continue;
@@ -153,8 +187,6 @@ export function descargarMisaPDF(misa: Misa) {
 
     doc.addPage();
     y = margin;
-
-    // Badge de categoría
     doc.setFillColor(224, 242, 254);
     doc.roundedRect(margin, y - 4, 80, 8, 2, 2, "F");
     doc.setFont("helvetica", "bold");
@@ -162,8 +194,7 @@ export function descargarMisaPDF(misa: Misa) {
     doc.setTextColor(3, 105, 161);
     doc.text(`${cat.icono || ""} ${cat.nombre}`.trim(), margin + 3, y + 1.5);
     y += 12;
-
-    y = drawSong(doc, cancion, y, pageWidth, margin);
+    drawSong(doc, cancion, y, pageWidth, margin);
   }
 
   const pageCount = doc.getNumberOfPages();

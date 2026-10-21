@@ -1,12 +1,18 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
-import { Cancion, ACORDES_COMUNES } from "@/types/song";
+import { Cancion, Linea, ACORDES_COMUNES } from "@/types/song";
 
 interface SongEditorProps {
   cancion: Cancion;
   onChange: (cancion: Cancion) => void;
   onSave: () => void;
+}
+
+interface CoroGuardado {
+  id: string;
+  nombre: string;
+  lineas: Linea[];
 }
 
 export default function SongEditor({ cancion, onChange, onSave }: SongEditorProps) {
@@ -15,8 +21,73 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
   const [showPalette, setShowPalette] = useState(true);
   const editorRef = useRef<HTMLDivElement>(null);
 
+  // Historial para Ctrl+Z / Ctrl+Y
+  const historyRef = useRef<Cancion[]>([]);
+  const historyIndexRef = useRef(-1);
+  const skipHistoryRef = useRef(false);
+
+  // Selección de líneas para copiar / marcar coro
+  const [selStart, setSelStart] = useState<number | null>(null);
+  const [selEnd, setSelEnd] = useState<number | null>(null);
+
+  // Coros guardados (en memoria de esta sesión de edición; se pierden al salir si no se insertaron)
+  const [coros, setCoros] = useState<CoroGuardado[]>([]);
+  const [nombreCoro, setNombreCoro] = useState("Coro");
+
+  // Portapapeles interno de líneas (con acordes)
+  const clipboardRef = useRef<Linea[] | null>(null);
+
+  // Inicializar historial
+  useEffect(() => {
+    if (historyRef.current.length === 0) {
+      historyRef.current = [JSON.parse(JSON.stringify(cancion))];
+      historyIndexRef.current = 0;
+    }
+  }, []);
+
+  const pushHistory = useCallback((next: Cancion) => {
+    if (skipHistoryRef.current) {
+      skipHistoryRef.current = false;
+      return;
+    }
+    const snap = JSON.parse(JSON.stringify(next)) as Cancion;
+    // Truncar redo
+    historyRef.current = historyRef.current.slice(0, historyIndexRef.current + 1);
+    historyRef.current.push(snap);
+    // Límite 50
+    if (historyRef.current.length > 50) {
+      historyRef.current.shift();
+    } else {
+      historyIndexRef.current += 1;
+    }
+  }, []);
+
+  const applyChange = useCallback(
+    (next: Cancion) => {
+      pushHistory(next);
+      onChange(next);
+    },
+    [onChange, pushHistory]
+  );
+
+  const undo = useCallback(() => {
+    if (historyIndexRef.current <= 0) return;
+    historyIndexRef.current -= 1;
+    const prev = historyRef.current[historyIndexRef.current];
+    skipHistoryRef.current = true;
+    onChange(JSON.parse(JSON.stringify(prev)));
+  }, [onChange]);
+
+  const redo = useCallback(() => {
+    if (historyIndexRef.current >= historyRef.current.length - 1) return;
+    historyIndexRef.current += 1;
+    const next = historyRef.current[historyIndexRef.current];
+    skipHistoryRef.current = true;
+    onChange(JSON.parse(JSON.stringify(next)));
+  }, [onChange]);
+
   const handleTituloChange = (titulo: string) => {
-    onChange({ ...cancion, titulo });
+    applyChange({ ...cancion, titulo });
   };
 
   const selectWord = (lineaIdx: number, palabraIdx: number) => {
@@ -38,10 +109,10 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
           }),
         };
       });
-      onChange({ ...cancion, lineas: nuevasLineas });
+      applyChange({ ...cancion, lineas: nuevasLineas });
       setAcordeInput(acorde);
     },
-    [selectedWord, cancion, onChange]
+    [selectedWord, cancion, applyChange]
   );
 
   const applyAcordeInput = () => {
@@ -58,19 +129,25 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
         }),
       };
     });
-    onChange({ ...cancion, lineas: nuevasLineas });
+    applyChange({ ...cancion, lineas: nuevasLineas });
   };
 
   const addLinea = () => {
-    const nuevasLineas = [...cancion.lineas, { palabras: [{ texto: "" }] }];
-    onChange({ ...cancion, lineas: nuevasLineas });
+    applyChange({
+      ...cancion,
+      lineas: [...cancion.lineas, { palabras: [{ texto: "" }] }],
+    });
   };
 
   const removeLinea = (idx: number) => {
     if (cancion.lineas.length <= 1) return;
-    const nuevas = cancion.lineas.filter((_, i) => i !== idx);
-    onChange({ ...cancion, lineas: nuevas });
+    applyChange({
+      ...cancion,
+      lineas: cancion.lineas.filter((_, i) => i !== idx),
+    });
     setSelectedWord(null);
+    setSelStart(null);
+    setSelEnd(null);
   };
 
   const addPalabra = (lineaIdx: number) => {
@@ -78,7 +155,7 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
       if (li !== lineaIdx) return linea;
       return { palabras: [...linea.palabras, { texto: "" }] };
     });
-    onChange({ ...cancion, lineas: nuevasLineas });
+    applyChange({ ...cancion, lineas: nuevasLineas });
   };
 
   const removePalabra = (lineaIdx: number, palabraIdx: number) => {
@@ -88,11 +165,74 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
       if (li !== lineaIdx) return l;
       return { palabras: l.palabras.filter((_, pi) => pi !== palabraIdx) };
     });
-    onChange({ ...cancion, lineas: nuevasLineas });
+    applyChange({ ...cancion, lineas: nuevasLineas });
     setSelectedWord(null);
   };
 
-  // Espacio = nueva palabra, Enter = nueva línea, Backspace en vacío = borrar palabra
+  // ---- Selección de líneas ----
+  const toggleLineSelection = (idx: number, shiftKey: boolean) => {
+    if (selStart === null || !shiftKey) {
+      setSelStart(idx);
+      setSelEnd(idx);
+    } else {
+      setSelEnd(idx);
+    }
+  };
+
+  const getSelectedRange = (): { from: number; to: number } | null => {
+    if (selStart === null || selEnd === null) return null;
+    return { from: Math.min(selStart, selEnd), to: Math.max(selStart, selEnd) };
+  };
+
+  const copySelectedLines = () => {
+    const range = getSelectedRange();
+    if (!range) {
+      alert("Selecciona líneas primero (clic en el número de línea; Shift+clic para rango)");
+      return;
+    }
+    clipboardRef.current = JSON.parse(
+      JSON.stringify(cancion.lineas.slice(range.from, range.to + 1))
+    );
+    alert(`Copiadas ${range.to - range.from + 1} línea(s) con acordes`);
+  };
+
+  const pasteLines = () => {
+    if (!clipboardRef.current || clipboardRef.current.length === 0) {
+      alert("No hay nada copiado. Selecciona líneas y pulsa «Copiar líneas».");
+      return;
+    }
+    const insertAt = selEnd !== null ? selEnd + 1 : cancion.lineas.length;
+    const nuevas = [...cancion.lineas];
+    const copia = JSON.parse(JSON.stringify(clipboardRef.current)) as Linea[];
+    nuevas.splice(insertAt, 0, ...copia);
+    applyChange({ ...cancion, lineas: nuevas });
+  };
+
+  const guardarCoro = () => {
+    const range = getSelectedRange();
+    if (!range) {
+      alert("Selecciona las líneas del coro (clic en el nº de línea; Shift+clic para varias)");
+      return;
+    }
+    const lineas = JSON.parse(
+      JSON.stringify(cancion.lineas.slice(range.from, range.to + 1))
+    ) as Linea[];
+    const nombre = nombreCoro.trim() || `Coro ${coros.length + 1}`;
+    setCoros((prev) => [
+      ...prev,
+      { id: `${Date.now()}`, nombre, lineas },
+    ]);
+    alert(`Coro «${nombre}» guardado. Usa «Insertar coro» para repetirlo.`);
+  };
+
+  const insertarCoro = (coro: CoroGuardado) => {
+    const insertAt = selEnd !== null ? selEnd + 1 : cancion.lineas.length;
+    const nuevas = [...cancion.lineas];
+    const copia = JSON.parse(JSON.stringify(coro.lineas)) as Linea[];
+    nuevas.splice(insertAt, 0, ...copia);
+    applyChange({ ...cancion, lineas: nuevas });
+  };
+
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
     lineaIdx: number,
@@ -110,7 +250,7 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
         nuevasPalabras.splice(palabraIdx + 1, 0, { texto: "" });
         return { palabras: nuevasPalabras };
       });
-      onChange({ ...cancion, lineas: nuevasLineas });
+      applyChange({ ...cancion, lineas: nuevasLineas });
       setTimeout(() => {
         setSelectedWord({ lineaIdx, palabraIdx: palabraIdx + 1 });
         const nextInput = editorRef.current?.querySelector(
@@ -136,7 +276,7 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
       e.preventDefault();
       const nuevasLineas = [...cancion.lineas];
       nuevasLineas.splice(lineaIdx + 1, 0, { palabras: [{ texto: "" }] });
-      onChange({ ...cancion, lineas: nuevasLineas });
+      applyChange({ ...cancion, lineas: nuevasLineas });
       setTimeout(() => {
         setSelectedWord({ lineaIdx: lineaIdx + 1, palabraIdx: 0 });
         const nextInput = editorRef.current?.querySelector(
@@ -164,23 +304,37 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
       }));
 
     if (lineasNuevas.length > 0) {
-      onChange({ ...cancion, lineas: [...cancion.lineas, ...lineasNuevas] });
+      applyChange({ ...cancion, lineas: [...cancion.lineas, ...lineasNuevas] });
     }
   };
 
+  // Atajos globales: Ctrl+Z, Ctrl+Y, Ctrl+S, Ctrl+C/V de líneas
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+      const mod = e.ctrlKey || e.metaKey;
+      if (mod && e.key === "z" && !e.shiftKey) {
+        e.preventDefault();
+        undo();
+      }
+      if (mod && (e.key === "y" || (e.key === "z" && e.shiftKey))) {
+        e.preventDefault();
+        redo();
+      }
+      if (mod && e.key === "s") {
         e.preventDefault();
         onSave();
       }
       if (e.key === "Escape") {
         setSelectedWord(null);
+        setSelStart(null);
+        setSelEnd(null);
       }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [onSave]);
+  }, [undo, redo, onSave]);
+
+  const range = getSelectedRange();
 
   return (
     <div className="flex flex-col gap-6 w-full max-w-5xl mx-auto">
@@ -191,9 +345,83 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
           type="text"
           value={cancion.titulo}
           onChange={(e) => handleTituloChange(e.target.value)}
-          className="text-2xl md:text-3xl font-bold px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-sky-500 focus:outline-none bg-white shadow-sm"
+          className="text-2xl md:text-3xl font-bold px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-sky-500 focus:outline-none bg-white shadow-sm text-slate-900"
           placeholder="Título..."
         />
+      </div>
+
+      {/* Herramientas: undo, coros, copiar */}
+      <div className="bg-amber-50 rounded-2xl p-4 border border-amber-200 space-y-3">
+        <h3 className="font-semibold text-slate-700">Herramientas de edición</h3>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={undo}
+            className="px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm font-medium hover:bg-slate-50"
+            title="Ctrl+Z"
+          >
+            ↩ Deshacer
+          </button>
+          <button
+            type="button"
+            onClick={redo}
+            className="px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm font-medium hover:bg-slate-50"
+            title="Ctrl+Y"
+          >
+            ↪ Rehacer
+          </button>
+          <button
+            type="button"
+            onClick={copySelectedLines}
+            className="px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm font-medium hover:bg-slate-50"
+          >
+            📋 Copiar líneas
+          </button>
+          <button
+            type="button"
+            onClick={pasteLines}
+            className="px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm font-medium hover:bg-slate-50"
+          >
+            📌 Pegar líneas
+          </button>
+        </div>
+
+        <div className="flex flex-wrap gap-2 items-center">
+          <input
+            type="text"
+            value={nombreCoro}
+            onChange={(e) => setNombreCoro(e.target.value)}
+            className="px-3 py-2 rounded-lg border border-slate-300 text-sm w-32"
+            placeholder="Nombre coro"
+          />
+          <button
+            type="button"
+            onClick={guardarCoro}
+            className="px-3 py-2 bg-violet-100 text-violet-800 rounded-lg text-sm font-medium hover:bg-violet-200"
+          >
+            ⭐ Guardar selección como coro
+          </button>
+          {coros.map((c) => (
+            <button
+              key={c.id}
+              type="button"
+              onClick={() => insertarCoro(c)}
+              className="px-3 py-2 bg-violet-600 text-white rounded-lg text-sm font-medium hover:bg-violet-700"
+              title={`${c.lineas.length} línea(s)`}
+            >
+              + Insertar «{c.nombre}»
+            </button>
+          ))}
+        </div>
+        <p className="text-xs text-slate-500">
+          Clic en el <strong>número de línea</strong> para seleccionarla. Shift+clic para seleccionar un rango.
+          Luego «Copiar líneas» / «Guardar como coro» e «Insertar coro» para repetir con letra y acordes.
+        </p>
+        {range && (
+          <p className="text-sm text-violet-700 font-medium">
+            Seleccionadas: líneas {range.from + 1} – {range.to + 1}
+          </p>
+        )}
       </div>
 
       {/* Paleta de acordes */}
@@ -238,7 +466,7 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
                 onKeyDown={(e) => e.key === "Enter" && applyAcordeInput()}
                 placeholder="Escribe acorde personalizado..."
                 disabled={!selectedWord}
-                className="flex-1 min-w-[140px] px-4 py-2 rounded-lg border border-slate-300 focus:border-sky-500 focus:outline-none font-mono disabled:bg-slate-100"
+                className="flex-1 min-w-[140px] px-4 py-2 rounded-lg border border-slate-300 focus:border-sky-500 focus:outline-none font-mono disabled:bg-slate-100 text-slate-900"
               />
               <button
                 type="button"
@@ -266,105 +494,122 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
                   {cancion.lineas[selectedWord.lineaIdx]?.palabras[selectedWord.palabraIdx]?.texto ||
                     "(vacía)"}
                 </strong>
-                {" — "}haz clic en un acorde o escribe uno.
               </p>
             ) : (
               <p className="mt-2 text-sm text-slate-500">
-                Haz clic en una palabra de la letra para asignarle un acorde.
+                Haz clic en una palabra para asignarle un acorde.
               </p>
             )}
           </>
         )}
       </div>
 
-      {/* Editor de líneas - inputs editables */}
+      {/* Editor de líneas */}
       <div
         ref={editorRef}
         onPaste={handlePaste}
         className="bg-white rounded-2xl border-2 border-slate-200 p-4 md:p-6 shadow-sm min-h-[300px]"
       >
         <p className="text-sm text-slate-500 mb-4">
-          Escribe la letra normalmente. Usa{" "}
-          <kbd className="px-1.5 py-0.5 bg-slate-100 rounded text-xs">Espacio</kbd> para nueva
-          palabra, <kbd className="px-1.5 py-0.5 bg-slate-100 rounded text-xs">Enter</kbd> para
-          nueva línea. Luego haz clic en una palabra y asígnale un acorde.
+          Escribe con{" "}
+          <kbd className="px-1.5 py-0.5 bg-slate-100 rounded text-xs">Espacio</kbd> (nueva palabra) y{" "}
+          <kbd className="px-1.5 py-0.5 bg-slate-100 rounded text-xs">Enter</kbd> (nueva línea).{" "}
+          <kbd className="px-1.5 py-0.5 bg-slate-100 rounded text-xs">Ctrl+Z</kbd> deshacer.
         </p>
 
-        <div className="space-y-6">
-          {cancion.lineas.map((linea, lineaIdx) => (
-            <div key={lineaIdx} className="group relative">
-              <div className="flex flex-wrap gap-x-1 gap-y-2 items-end">
-                {linea.palabras.map((palabra, palabraIdx) => {
-                  const isSelected =
-                    selectedWord?.lineaIdx === lineaIdx &&
-                    selectedWord?.palabraIdx === palabraIdx;
-                  return (
-                    <div
-                      key={palabraIdx}
-                      className="flex flex-col items-center min-w-[2.5rem]"
-                    >
-                      <span
-                        className={`text-sm font-mono font-bold h-6 leading-6 select-none pointer-events-none
-                          ${palabra.acorde ? "text-sky-700" : "text-transparent"}
-                        `}
-                      >
-                        {palabra.acorde || "·"}
-                      </span>
-
-                      <input
-                        type="text"
-                        data-line={lineaIdx}
-                        data-word={palabraIdx}
-                        value={palabra.texto}
-                        onChange={(e) =>
-                          updatePalabraTexto(lineaIdx, palabraIdx, e.target.value)
-                        }
-                        onFocus={() => selectWord(lineaIdx, palabraIdx)}
-                        onClick={() => selectWord(lineaIdx, palabraIdx)}
-                        onKeyDown={(e) => handleKeyDown(e, lineaIdx, palabraIdx)}
-                        className={`
-                          px-1.5 py-1 rounded text-lg md:text-xl leading-tight text-center
-                          border-0 bg-transparent focus:outline-none focus:ring-2 focus:ring-sky-400
-                          min-w-[2rem] max-w-[14rem] text-slate-900
-                          ${
-                            isSelected
-                              ? "bg-sky-100 ring-2 ring-sky-400"
-                              : palabra.acorde
-                                ? "bg-sky-50"
-                                : "hover:bg-slate-100"
-                          }
-                        `}
-                        style={{
-                          width: `${Math.max(2.5, (palabra.texto.length || 1) + 1.5)}ch`,
-                        }}
-                        placeholder="..."
-                      />
-                    </div>
-                  );
-                })}
-
+        <div className="space-y-4">
+          {cancion.lineas.map((linea, lineaIdx) => {
+            const inRange =
+              range !== null && lineaIdx >= range.from && lineaIdx <= range.to;
+            return (
+              <div
+                key={lineaIdx}
+                className={`group relative flex gap-2 items-start rounded-lg p-1 ${
+                  inRange ? "bg-violet-50 ring-1 ring-violet-300" : ""
+                }`}
+              >
+                {/* Número de línea (selección) */}
                 <button
                   type="button"
-                  onClick={() => addPalabra(lineaIdx)}
-                  className="self-end mb-1 px-2 py-1 text-slate-400 hover:text-sky-600 text-sm opacity-0 group-hover:opacity-100 transition-opacity"
-                  title="Agregar palabra"
+                  onClick={(e) => toggleLineSelection(lineaIdx, e.shiftKey)}
+                  className={`shrink-0 w-8 h-8 mt-5 rounded text-xs font-mono font-bold
+                    ${inRange ? "bg-violet-500 text-white" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}
+                  title="Clic = seleccionar · Shift+clic = rango"
                 >
-                  +
+                  {lineaIdx + 1}
                 </button>
-              </div>
 
-              <div className="absolute -right-1 top-0 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
+                <div className="flex-1 flex flex-wrap gap-x-1 gap-y-2 items-end">
+                  {linea.palabras.map((palabra, palabraIdx) => {
+                    const isSelected =
+                      selectedWord?.lineaIdx === lineaIdx &&
+                      selectedWord?.palabraIdx === palabraIdx;
+                    return (
+                      <div
+                        key={palabraIdx}
+                        className="flex flex-col items-center min-w-[2.5rem]"
+                      >
+                        <span
+                          className={`text-sm font-mono font-bold h-6 leading-6 select-none pointer-events-none
+                            ${palabra.acorde ? "text-sky-700" : "text-transparent"}
+                          `}
+                        >
+                          {palabra.acorde || "·"}
+                        </span>
+
+                        <input
+                          type="text"
+                          data-line={lineaIdx}
+                          data-word={palabraIdx}
+                          value={palabra.texto}
+                          onChange={(e) =>
+                            updatePalabraTexto(lineaIdx, palabraIdx, e.target.value)
+                          }
+                          onFocus={() => selectWord(lineaIdx, palabraIdx)}
+                          onClick={() => selectWord(lineaIdx, palabraIdx)}
+                          onKeyDown={(e) => handleKeyDown(e, lineaIdx, palabraIdx)}
+                          className={`
+                            px-1.5 py-1 rounded text-lg md:text-xl leading-tight text-center
+                            border-0 bg-transparent focus:outline-none focus:ring-2 focus:ring-sky-400
+                            min-w-[2rem] max-w-[14rem] text-slate-900
+                            ${
+                              isSelected
+                                ? "bg-sky-100 ring-2 ring-sky-400"
+                                : palabra.acorde
+                                  ? "bg-sky-50"
+                                  : "hover:bg-slate-100"
+                            }
+                          `}
+                          style={{
+                            width: `${Math.max(2.5, (palabra.texto.length || 1) + 1.5)}ch`,
+                          }}
+                          placeholder="..."
+                        />
+                      </div>
+                    );
+                  })}
+
+                  <button
+                    type="button"
+                    onClick={() => addPalabra(lineaIdx)}
+                    className="self-end mb-1 px-2 py-1 text-slate-400 hover:text-sky-600 text-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                    title="Agregar palabra"
+                  >
+                    +
+                  </button>
+                </div>
+
                 <button
                   type="button"
                   onClick={() => removeLinea(lineaIdx)}
-                  className="p-1 text-red-400 hover:text-red-600 text-sm"
+                  className="opacity-0 group-hover:opacity-100 p-1 text-red-400 hover:text-red-600 text-sm mt-5"
                   title="Eliminar línea"
                 >
                   ✕
                 </button>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <button
@@ -387,7 +632,7 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
       </div>
 
       <p className="text-center text-sm text-slate-400">
-        Tip: Ctrl+S para guardar · Esc para deseleccionar · Puedes pegar texto completo
+        Ctrl+Z deshacer · Ctrl+Y rehacer · Ctrl+S guardar · Guardar solo guarda en el repertorio (no descarga PDF)
       </p>
     </div>
   );

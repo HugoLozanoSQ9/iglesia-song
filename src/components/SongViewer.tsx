@@ -10,8 +10,8 @@ interface SongViewerProps {
 }
 
 export default function SongViewer({ cancion, showDownload = true }: SongViewerProps) {
-  const handleDownloadPDF = () => {
-    descargarCancionPDF(cancion);
+  const handleDownloadPDF = async () => {
+    await descargarCancionPDF(cancion);
   };
 
   const handleCopy = async () => {
@@ -30,36 +30,33 @@ export default function SongViewer({ cancion, showDownload = true }: SongViewerP
         {cancion.autor && <p className="text-slate-500">Autor: {cancion.autor}</p>}
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-sm">
-        <div className="space-y-8 font-serif">
+      {/* Misma estructura que el editor: cada palabra es una columna (acorde arriba, letra abajo) */}
+      <div className="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-sm overflow-x-auto">
+        <div className="space-y-6">
           {cancion.lineas.map((linea, idx) => (
-            <div key={idx} className="leading-relaxed">
-              <div className="flex flex-wrap gap-x-1 mb-0.5">
-                {linea.palabras.map((p, pi) => (
+            <div key={idx} className="flex flex-wrap gap-x-3 gap-y-1 items-end">
+              {linea.palabras.map((p, pi) => (
+                <div
+                  key={pi}
+                  className="flex flex-col items-start"
+                  style={{
+                    minWidth: `${Math.max(
+                      (p.texto || " ").length,
+                      (p.acorde || " ").length
+                    )}ch`,
+                  }}
+                >
                   <span
-                    key={pi}
-                    className="inline-block text-center min-w-[1.5em] text-sky-700 font-mono font-bold text-sm md:text-base"
-                    style={{
-                      minWidth: `${Math.max(p.texto.length, (p.acorde || "").length) * 0.6}em`,
-                    }}
+                    className="font-mono font-bold text-sky-700 text-sm md:text-base leading-none h-5 mb-1"
+                    style={{ minHeight: "1.25rem" }}
                   >
                     {p.acorde || "\u00A0"}
                   </span>
-                ))}
-              </div>
-              <div className="flex flex-wrap gap-x-1 text-xl md:text-2xl text-slate-800">
-                {linea.palabras.map((p, pi) => (
-                  <span
-                    key={pi}
-                    className="inline-block text-center"
-                    style={{
-                      minWidth: `${Math.max(p.texto.length, (p.acorde || "").length) * 0.6}em`,
-                    }}
-                  >
+                  <span className="text-xl md:text-2xl text-slate-800 leading-tight whitespace-nowrap">
                     {p.texto}
                   </span>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           ))}
         </div>

@@ -44,8 +44,8 @@ function MisaContent() {
     );
   }
 
-  const handlePDF = () => {
-    descargarMisaPDF(misa);
+  const handlePDF = async () => {
+    await descargarMisaPDF(misa);
   };
 
   const cancionActual = cancionActiva ? canciones[cancionActiva] : null;
