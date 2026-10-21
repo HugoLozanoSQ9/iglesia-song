@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { getCategorias, getCancionesPorCategoria, isAdminAutenticado } from "@/lib/storage";
 import { Cancion, Categoria } from "@/types/song";
 
-export default function CategoriaPage() {
+function CategoriaContent() {
   const params = useParams();
   const id = params.id as string;
 
@@ -82,5 +82,13 @@ export default function CategoriaPage() {
         </ul>
       )}
     </div>
+  );
+}
+
+export default function CategoriaPage() {
+  return (
+    <Suspense fallback={<div className="max-w-3xl mx-auto px-4 py-16 text-center text-slate-500">Cargando categoría...</div>}>
+      <CategoriaContent />
+    </Suspense>
   );
 }

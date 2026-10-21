@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useParams } from "next/navigation";
 import SongEditor from "@/components/SongEditor";
 import {
@@ -11,7 +11,7 @@ import {
 } from "@/lib/storage";
 import { Cancion, Categoria } from "@/types/song";
 
-export default function EditarCancionPage() {
+function EditarContent() {
   const router = useRouter();
   const params = useParams();
   const id = params.id as string;
@@ -77,5 +77,13 @@ export default function EditarCancionPage() {
 
       <SongEditor cancion={cancion} onChange={setCancion} onSave={handleSave} />
     </div>
+  );
+}
+
+export default function EditarCancionPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-slate-500">Cargando...</div>}>
+      <EditarContent />
+    </Suspense>
   );
 }

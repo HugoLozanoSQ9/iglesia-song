@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import SongViewer from "@/components/SongViewer";
 import { getCancion, isAdminAutenticado } from "@/lib/storage";
 import { Cancion } from "@/types/song";
 
-export default function CancionPage() {
+function CancionContent() {
   const params = useParams();
   const id = params.id as string;
 
@@ -52,5 +52,13 @@ export default function CancionPage() {
 
       <SongViewer cancion={cancion} />
     </div>
+  );
+}
+
+export default function CancionPage() {
+  return (
+    <Suspense fallback={<div className="max-w-3xl mx-auto px-4 py-16 text-center text-slate-500">Cargando canción...</div>}>
+      <CancionContent />
+    </Suspense>
   );
 }

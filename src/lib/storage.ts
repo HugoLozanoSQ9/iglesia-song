@@ -116,7 +116,7 @@ export function crearCancionVacia(categoria: string, titulo = "Nueva canción"):
     categoria,
     lineas: [
       {
-        palabras: [{ texto: "Escribe" }, { texto: "aquí" }, { texto: "la" }, { texto: "letra..." }],
+        palabras: [{ texto: "" }],
       },
     ],
     creadoEn: new Date().toISOString(),
