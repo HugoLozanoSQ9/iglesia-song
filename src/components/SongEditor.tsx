@@ -1,7 +1,13 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
-import { Cancion, Linea, ACORDES_COMUNES } from "@/types/song";
+import {
+  Cancion,
+  Linea,
+  ACORDES_COMUNES,
+  AcordePos,
+  getAcordesDePalabra,
+} from "@/types/song";
 
 interface SongEditorProps {
   cancion: Cancion;
@@ -15,29 +21,31 @@ interface CoroGuardado {
   lineas: Linea[];
 }
 
-/** Una palabra: rejilla 1 columna por letra. El acorde empieza exactamente en acordeIndex. */
+/** Rejilla 1 columna por letra; varios acordes anclados a distintas letras. */
 function PalabraGrid({
   texto,
-  acorde,
-  acordeIndex = 0,
+  acordes,
   selected,
   onSelect,
   onChangeTexto,
 }: {
   texto: string;
-  acorde?: string;
-  acordeIndex?: number;
+  acordes: AcordePos[];
   selected: boolean;
   onSelect: () => void;
   onChangeTexto: (t: string) => void;
 }) {
   const letters = Array.from(texto || " ");
-  const aidx = Math.max(0, Math.min(acordeIndex, Math.max(letters.length - 1, 0)));
+  const byIndex = new Map<number, string>();
+  for (const a of acordes) {
+    const idx = Math.max(0, Math.min(a.index, Math.max(letters.length - 1, 0)));
+    byIndex.set(idx, a.acorde);
+  }
 
   return (
     <div
       className={`inline-block font-mono mx-0.5 rounded ${
-        selected ? "ring-2 ring-sky-400 bg-sky-50" : acorde ? "bg-sky-50/50" : ""
+        selected ? "ring-2 ring-sky-400 bg-sky-50" : acordes.length ? "bg-sky-50/50" : ""
       }`}
       onClick={onSelect}
     >
@@ -49,13 +57,15 @@ function PalabraGrid({
             style={{ width: "1ch", minWidth: "1ch" }}
           >
             <span className="relative h-4 w-full block">
-              {acorde && i === aidx && (
+              {byIndex.has(i) && (
                 <span className="absolute left-0 top-0 text-sky-700 font-bold text-[11px] leading-none whitespace-nowrap z-10">
-                  {acorde}
+                  {byIndex.get(i)}
                 </span>
               )}
             </span>
-            <span className="text-lg leading-tight text-slate-900 select-none">{ch === " " ? "\u00A0" : ch}</span>
+            <span className="text-lg leading-tight text-slate-900 select-none">
+              {ch === " " ? "\u00A0" : ch}
+            </span>
           </div>
         ))}
       </div>
@@ -74,7 +84,12 @@ function PalabraGrid({
 }
 
 export default function SongEditor({ cancion, onChange, onSave }: SongEditorProps) {
-  const [selectedWord, setSelectedWord] = useState<{ lineaIdx: number; palabraIdx: number } | null>(null);
+  const [selectedWord, setSelectedWord] = useState<{
+    lineaIdx: number;
+    palabraIdx: number;
+  } | null>(null);
+  /** Letra activa dentro de la palabra (dónde se aplicará el siguiente acorde) */
+  const [selectedLetter, setSelectedLetter] = useState(0);
   const [acordeInput, setAcordeInput] = useState("");
   const [showQuickChords, setShowQuickChords] = useState(false);
 
@@ -132,12 +147,15 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
 
   const selectWord = (lineaIdx: number, palabraIdx: number) => {
     setSelectedWord({ lineaIdx, palabraIdx });
-    const palabra = cancion.lineas[lineaIdx]?.palabras[palabraIdx];
-    setAcordeInput(palabra?.acorde || "");
+    setSelectedLetter(0);
+    const p = cancion.lineas[lineaIdx]?.palabras[palabraIdx];
+    const lista = p ? getAcordesDePalabra(p) : [];
+    setAcordeInput(lista[0]?.acorde || "");
   };
 
-  const assignChord = useCallback(
-    (acorde: string, index?: number) => {
+  /** Pone o reemplaza un acorde en la letra `index` sin borrar los demás. */
+  const setChordAtLetter = useCallback(
+    (acorde: string, index: number) => {
       if (!selectedWord) return;
       const { lineaIdx, palabraIdx } = selectedWord;
       const nuevasLineas = cancion.lineas.map((linea, li) => {
@@ -145,31 +163,53 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
         return {
           palabras: linea.palabras.map((p, pi) => {
             if (pi !== palabraIdx) return p;
-            if (!acorde) return { texto: p.texto };
             const maxIdx = Math.max(0, (p.texto || "").length - 1);
-            const acordeIndex =
-              index !== undefined
-                ? Math.max(0, Math.min(index, maxIdx))
-                : Math.min(p.acordeIndex ?? 0, maxIdx);
-            return { ...p, acorde, acordeIndex };
+            const idx = Math.max(0, Math.min(index, maxIdx));
+            let lista = getAcordesDePalabra(p).filter((a) => a.index !== idx);
+            if (acorde && acorde.trim()) {
+              lista = [...lista, { acorde: acorde.trim(), index: idx }].sort(
+                (a, b) => a.index - b.index
+              );
+            }
+            // Guardar solo en formato nuevo; limpiar legacy
+            const { acorde: _a, acordeIndex: _i, ...rest } = p;
+            return { ...rest, texto: p.texto, acordes: lista.length ? lista : undefined };
           }),
         };
       });
       applyChange({ ...cancion, lineas: nuevasLineas });
-      setAcordeInput(acorde);
+      setAcordeInput(acorde.trim());
+      setSelectedLetter(index);
     },
     [selectedWord, cancion, applyChange]
   );
 
-  const setAcordeIndex = (index: number) => {
+  const applyAcordeInput = () => {
     if (!selectedWord) return;
-    const p = cancion.lineas[selectedWord.lineaIdx]?.palabras[selectedWord.palabraIdx];
-    const ac = p?.acorde || acordeInput.trim();
-    if (!ac) {
-      alert("Primero escribe un acorde y pulsa Aplicar");
-      return;
-    }
-    assignChord(ac, index);
+    setChordAtLetter(acordeInput.trim(), selectedLetter);
+  };
+
+  const quitarAcordeEnLetra = () => {
+    setChordAtLetter("", selectedLetter);
+  };
+
+  const quitarTodosAcordes = () => {
+    if (!selectedWord) return;
+    const { lineaIdx, palabraIdx } = selectedWord;
+    applyChange({
+      ...cancion,
+      lineas: cancion.lineas.map((linea, li) => {
+        if (li !== lineaIdx) return linea;
+        return {
+          palabras: linea.palabras.map((p, pi) => {
+            if (pi !== palabraIdx) return p;
+            const { acorde: _a, acordeIndex: _i, acordes: _c, ...rest } = p;
+            return { ...rest, texto: p.texto };
+          }),
+        };
+      }),
+    });
+    setAcordeInput("");
   };
 
   const updatePalabraTexto = (lineaIdx: number, palabraIdx: number, texto: string) => {
@@ -181,9 +221,15 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
           palabras: linea.palabras.map((p, pi) => {
             if (pi !== palabraIdx) return p;
             const maxIdx = Math.max(0, texto.length - 1);
-            const acordeIndex =
-              p.acordeIndex !== undefined ? Math.min(p.acordeIndex, maxIdx) : 0;
-            return { ...p, texto, acordeIndex };
+            const lista = getAcordesDePalabra(p)
+              .map((a) => ({ ...a, index: Math.min(a.index, maxIdx) }))
+              .filter((a, i, arr) => arr.findIndex((x) => x.index === a.index) === i);
+            const { acorde: _a, acordeIndex: _i, ...rest } = p;
+            return {
+              ...rest,
+              texto,
+              acordes: lista.length ? lista : undefined,
+            };
           }),
         };
       }),
@@ -325,6 +371,10 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
   const selectedPalabra = selectedWord
     ? cancion.lineas[selectedWord.lineaIdx]?.palabras[selectedWord.palabraIdx]
     : null;
+  const acordesSeleccionados = selectedPalabra
+    ? getAcordesDePalabra(selectedPalabra)
+    : [];
+  const acordeEnLetraActiva = acordesSeleccionados.find((a) => a.index === selectedLetter);
 
   return (
     <div className="flex flex-col gap-4 w-full max-w-5xl mx-auto pb-40">
@@ -344,8 +394,8 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
         className="bg-white rounded-2xl border-2 border-slate-200 p-4 md:p-6 shadow-sm min-h-[300px]"
       >
         <p className="text-sm text-slate-500 mb-4">
-          Clic en una <strong>palabra</strong> → acorde abajo → clic en la <strong>letra</strong>. Cada
-          letra es una columna fija (así el acorde no se desvía).
+          Clic en una <strong>palabra</strong> → elige la <strong>letra</strong> → escribe el acorde.
+          Puedes poner <strong>varios acordes</strong> en la misma palabra (un cambio por letra).
         </p>
 
         <div className="space-y-5">
@@ -372,8 +422,7 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
                     <PalabraGrid
                       key={palabraIdx}
                       texto={palabra.texto}
-                      acorde={palabra.acorde}
-                      acordeIndex={palabra.acordeIndex ?? 0}
+                      acordes={getAcordesDePalabra(palabra)}
                       selected={
                         selectedWord?.lineaIdx === lineaIdx &&
                         selectedWord?.palabraIdx === palabraIdx
@@ -486,49 +535,69 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
               <>
                 <span className="text-sm text-slate-600 shrink-0">
                   <strong className="text-slate-800 font-mono">{selectedPalabra.texto || "…"}</strong>
+                  {acordesSeleccionados.length > 1 && (
+                    <span className="ml-1 text-xs text-sky-600">
+                      ({acordesSeleccionados.length} acordes)
+                    </span>
+                  )}
                 </span>
                 <input
                   type="text"
                   value={acordeInput}
                   onChange={(e) => setAcordeInput(e.target.value)}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter") assignChord(acordeInput.trim());
+                    if (e.key === "Enter") applyAcordeInput();
                   }}
                   placeholder="Acorde"
                   className="px-3 py-1.5 rounded-lg border-2 border-sky-300 focus:border-sky-500 focus:outline-none font-mono text-sm w-28"
                 />
                 <button
                   type="button"
-                  onClick={() => assignChord(acordeInput.trim())}
+                  onClick={applyAcordeInput}
                   className="px-3 py-1.5 bg-sky-600 text-white rounded-lg text-sm font-medium hover:bg-sky-700"
                 >
-                  Aplicar
+                  Aplicar en letra
                 </button>
                 <button
                   type="button"
-                  onClick={() => assignChord("")}
+                  onClick={quitarAcordeEnLetra}
                   className="px-2.5 py-1.5 bg-red-50 text-red-600 rounded-lg text-sm hover:bg-red-100"
+                  title="Quita solo el acorde de la letra seleccionada"
                 >
-                  Quitar
+                  Quitar letra
                 </button>
-                <span className="text-xs text-slate-500">Letra:</span>
+                <button
+                  type="button"
+                  onClick={quitarTodosAcordes}
+                  className="px-2.5 py-1.5 bg-red-50 text-red-700 rounded-lg text-sm hover:bg-red-100"
+                  title="Quita todos los acordes de la palabra"
+                >
+                  Quitar todos
+                </button>
+                <span className="text-xs text-slate-500">Letras:</span>
                 <div className="flex flex-wrap gap-0.5">
                   {Array.from(selectedPalabra.texto || " ").map((ch, i) => {
-                    const active = (selectedPalabra.acordeIndex ?? 0) === i;
+                    const acEnI = acordesSeleccionados.find((a) => a.index === i);
+                    const active = selectedLetter === i;
                     return (
                       <button
                         key={i}
                         type="button"
-                        onClick={() => setAcordeIndex(i)}
+                        onClick={() => {
+                          setSelectedLetter(i);
+                          setAcordeInput(acEnI?.acorde || "");
+                        }}
                         className={`min-w-[1.75rem] px-1.5 py-1 rounded font-mono text-sm border transition-all
                           ${
                             active
                               ? "border-sky-500 bg-sky-100 text-sky-900"
-                              : "border-slate-200 bg-white hover:border-sky-300"
+                              : acEnI
+                                ? "border-sky-300 bg-sky-50"
+                                : "border-slate-200 bg-white hover:border-sky-300"
                           }`}
                       >
                         <span className="block text-[9px] text-sky-600 h-2.5 leading-none">
-                          {active && selectedPalabra.acorde ? selectedPalabra.acorde : "\u00A0"}
+                          {acEnI ? acEnI.acorde : "\u00A0"}
                         </span>
                         {ch}
                       </button>
@@ -545,7 +614,8 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
               </>
             ) : (
               <p className="text-sm text-slate-500 py-1">
-                Clic en una palabra para editar su acorde y la letra donde va
+                Clic en una palabra → elige letra → aplica acorde (puedes repetir en otra letra de la
+                misma palabra)
               </p>
             )}
           </div>
@@ -556,7 +626,7 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
                 <button
                   key={a}
                   type="button"
-                  onClick={() => assignChord(a)}
+                  onClick={() => setChordAtLetter(a, selectedLetter)}
                   className="px-2 py-1 rounded bg-sky-50 text-sky-800 text-xs font-mono font-semibold hover:bg-sky-100"
                 >
                   {a}

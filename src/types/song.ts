@@ -1,8 +1,38 @@
+/** Un acorde anclado a una letra concreta de la palabra */
+export interface AcordePos {
+  acorde: string;
+  /** Índice de la letra (0-based) donde empieza el acorde */
+  index: number;
+}
+
 export interface Palabra {
   texto: string;
+  /**
+   * Varios acordes en la misma palabra (cambios rápidos).
+   * Preferido sobre acorde/acordeIndex.
+   */
+  acordes?: AcordePos[];
+  /** @deprecated un solo acorde (compatibilidad con canciones viejas) */
   acorde?: string;
-  /** Índice de la letra (0-based) donde se alinea el acorde. Por defecto 0 = inicio. */
+  /** @deprecated índice del acorde único */
   acordeIndex?: number;
+}
+
+/** Normaliza acordes de una palabra (soporta formato viejo y nuevo) */
+export function getAcordesDePalabra(p: Palabra): AcordePos[] {
+  if (p.acordes && p.acordes.length > 0) {
+    return p.acordes
+      .filter((a) => a.acorde && a.acorde.trim())
+      .map((a) => ({
+        acorde: a.acorde.trim(),
+        index: Math.max(0, a.index ?? 0),
+      }))
+      .sort((a, b) => a.index - b.index);
+  }
+  if (p.acorde && p.acorde.trim()) {
+    return [{ acorde: p.acorde.trim(), index: Math.max(0, p.acordeIndex ?? 0) }];
+  }
+  return [];
 }
 
 export interface Linea {

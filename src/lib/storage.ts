@@ -1,4 +1,4 @@
-import { Cancion, Categoria, CATEGORIAS_DEFAULT, Misa } from "@/types/song";
+import { Cancion, Categoria, CATEGORIAS_DEFAULT, Misa, getAcordesDePalabra } from "@/types/song";
 
 const KEY_CANCIONES = "iglesia-canciones";
 const KEY_CATEGORIAS = "iglesia-categorias";
@@ -139,22 +139,24 @@ export function textoALineas(texto: string): { palabras: { texto: string }[] }[]
     }));
 }
 
-/** Exporta canción a texto: acorde encima de la letra (acordeIndex) */
+/** Exporta canción a texto: varios acordes por palabra encima de cada letra */
 export function cancionATexto(cancion: Cancion): string {
   const lineasTexto = cancion.lineas.map((linea) => {
     const cParts: string[] = [];
     const lParts: string[] = [];
     linea.palabras.forEach((p) => {
       const texto = p.texto || "";
-      const idx = Math.max(0, Math.min(p.acordeIndex ?? 0, Math.max(texto.length - 1, 0)));
-      let chordLine = " ".repeat(Math.max(texto.length, 1));
-      if (p.acorde) {
-        const ac = p.acorde;
-        const before = chordLine.substring(0, idx);
-        const after = chordLine.substring(idx + ac.length);
-        chordLine = (before + ac + after).padEnd(Math.max(texto.length, idx + ac.length));
+      const len = Math.max(texto.length, 1);
+      const chars = Array.from(" ".repeat(len));
+      for (const { acorde, index } of getAcordesDePalabra(p)) {
+        const idx = Math.max(0, Math.min(index, Math.max(texto.length - 1, 0)));
+        for (let k = 0; k < acorde.length; k++) {
+          if (idx + k < chars.length) chars[idx + k] = acorde[k];
+          else chars.push(acorde[k]);
+        }
       }
-      const width = Math.max(texto.length, chordLine.length);
+      let chordLine = chars.join("");
+      const width = Math.max(texto.length, chordLine.length, 1);
       cParts.push(chordLine.padEnd(width));
       lParts.push(texto.padEnd(width));
     });

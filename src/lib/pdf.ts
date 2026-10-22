@@ -1,6 +1,6 @@
 "use client";
 
-import { Cancion, Misa } from "@/types/song";
+import { Cancion, Misa, getAcordesDePalabra } from "@/types/song";
 import { getCancion, getCategorias } from "@/lib/storage";
 
 async function loadJsPDF() {
@@ -75,17 +75,16 @@ function drawSong(doc: any, cancion: Cancion, startY: number, pageWidth: number,
 
       for (const i of indices) {
         const p = linea.palabras[i];
-        if (p.acorde) {
-          const texto = p.texto || "";
-          const idx = Math.max(0, Math.min(p.acordeIndex ?? 0, Math.max(texto.length - 1, 0)));
-          // Ancho aproximado de las letras anteriores al índice
+        const texto = p.texto || "";
+        for (const { acorde, index } of getAcordesDePalabra(p)) {
+          const idx = Math.max(0, Math.min(index, Math.max(texto.length - 1, 0)));
           doc.setFont("helvetica", "normal");
           doc.setFontSize(12);
           const prefix = texto.slice(0, idx);
           const prefixW = prefix ? doc.getTextWidth(prefix) : 0;
           doc.setFont("helvetica", "bold");
           doc.setFontSize(9);
-          doc.text(p.acorde, x + prefixW, y);
+          doc.text(acorde, x + prefixW, y);
         }
         x += wordWidths[i] + gapWords;
       }

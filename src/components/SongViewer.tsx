@@ -1,6 +1,6 @@
 "use client";
 
-import { Cancion } from "@/types/song";
+import { Cancion, Palabra, getAcordesDePalabra } from "@/types/song";
 import { cancionATexto } from "@/lib/storage";
 import { descargarCancionPDF } from "@/lib/pdf";
 
@@ -9,32 +9,32 @@ interface SongViewerProps {
   showDownload?: boolean;
 }
 
-/** Construye dos renglones alineados (acordes / letra) con el mismo ancho por palabra. */
-function buildLine(palabras: { texto: string; acorde?: string; acordeIndex?: number }[]) {
+/** Construye dos renglones alineados; soporta varios acordes por palabra. */
+function buildLine(palabras: Palabra[]) {
   const chordParts: string[] = [];
   const lyricParts: string[] = [];
 
   for (const p of palabras) {
     const texto = p.texto || "";
-    const idx = Math.max(0, Math.min(p.acordeIndex ?? 0, Math.max(texto.length - 1, 0)));
-    const ac = p.acorde || "";
+    const len = Math.max(texto.length, 1);
+    const chars = Array.from(" ".repeat(len));
 
-    // Fila de acordes: espacios + acorde a partir de idx, mínimo tan larga como el texto
-    let chord = " ".repeat(texto.length || 1);
-    if (ac && texto.length > 0) {
-      const chars = chord.split("");
-      for (let k = 0; k < ac.length; k++) {
+    const lista = getAcordesDePalabra(p);
+    for (const { acorde, index } of lista) {
+      const idx = Math.max(0, Math.min(index, Math.max(texto.length - 1, 0)));
+      for (let k = 0; k < acorde.length; k++) {
         if (idx + k < chars.length) {
-          chars[idx + k] = ac[k];
+          chars[idx + k] = acorde[k];
         } else {
-          chars.push(ac[k]);
+          chars.push(acorde[k]);
         }
       }
-      chord = chars.join("");
     }
 
+    let chord = chars.join("");
     const width = Math.max(chord.length, texto.length, 1);
-    chordParts.push(chord.padEnd(width));
+    chord = chord.padEnd(width);
+    chordParts.push(chord);
     lyricParts.push(texto.padEnd(width));
   }
 
@@ -73,7 +73,10 @@ export default function SongViewer({ cancion, showDownload = true }: SongViewerP
               <pre
                 key={idx}
                 className="m-0 font-mono text-base md:text-lg leading-snug whitespace-pre"
-                style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" }}
+                style={{
+                  fontFamily:
+                    "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+                }}
               >
                 <span className="block text-sky-700 font-bold text-sm md:text-base min-h-[1.25em]">
                   {chords.length ? chords : " "}
