@@ -9,39 +9,61 @@ interface SongViewerProps {
   showDownload?: boolean;
 }
 
-/** Construye dos renglones alineados; soporta varios acordes por palabra. */
-function buildLine(palabras: Palabra[]) {
-  const chordParts: string[] = [];
-  const lyricParts: string[] = [];
+const MONO =
+  "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace";
 
-  for (const p of palabras) {
-    const texto = p.texto || "";
-    const len = Math.max(texto.length, 1);
-    const chars = Array.from(" ".repeat(len));
-
-    const lista = getAcordesDePalabra(p);
-    for (const { acorde, index } of lista) {
-      const idx = Math.max(0, Math.min(index, Math.max(texto.length - 1, 0)));
-      for (let k = 0; k < acorde.length; k++) {
-        if (idx + k < chars.length) {
-          chars[idx + k] = acorde[k];
-        } else {
-          chars.push(acorde[k]);
-        }
-      }
-    }
-
-    let chord = chars.join("");
-    const width = Math.max(chord.length, texto.length, 1);
-    chord = chord.padEnd(width);
-    chordParts.push(chord);
-    lyricParts.push(texto.padEnd(width));
+/**
+ * Misma rejilla que el editor: 1 columna = 1 letra (1ch).
+ * El acorde se ancla en esa letra y puede ser multi-carácter (A7, F#m)
+ * sin empujar las letras de la palabra.
+ */
+function PalabraVista({ palabra }: { palabra: Palabra }) {
+  const letters = Array.from(palabra.texto || " ");
+  const byIndex = new Map<number, string>();
+  for (const a of getAcordesDePalabra(palabra)) {
+    const idx = Math.max(0, Math.min(a.index, Math.max(letters.length - 1, 0)));
+    // Si ya hay uno en el mismo índice, el último gana (no debería pasar)
+    byIndex.set(idx, a.acorde);
   }
 
-  return {
-    chords: chordParts.join(" "),
-    lyrics: lyricParts.join(" "),
-  };
+  return (
+    <span className="inline-flex flex-row">
+      {letters.map((ch, i) => (
+        <span
+          key={i}
+          className="inline-flex flex-col items-start"
+          style={{ width: "1ch", minWidth: "1ch" }}
+        >
+          <span className="relative block w-full h-[1.1em]">
+            {byIndex.has(i) && (
+              <span
+                className="absolute left-0 top-0 text-sky-700 font-bold whitespace-nowrap leading-none"
+                style={{ fontSize: "0.85em" }}
+              >
+                {byIndex.get(i)}
+              </span>
+            )}
+          </span>
+          <span className="leading-tight text-slate-800">
+            {ch === " " ? "\u00A0" : ch}
+          </span>
+        </span>
+      ))}
+    </span>
+  );
+}
+
+function LineaVista({ palabras }: { palabras: Palabra[] }) {
+  return (
+    <div
+      className="flex flex-wrap items-end"
+      style={{ fontFamily: MONO, fontSize: "17px", columnGap: "1ch" }}
+    >
+      {palabras.map((p, i) => (
+        <PalabraVista key={i} palabra={p} />
+      ))}
+    </div>
+  );
 }
 
 export default function SongViewer({ cancion, showDownload = true }: SongViewerProps) {
@@ -67,24 +89,9 @@ export default function SongViewer({ cancion, showDownload = true }: SongViewerP
 
       <div className="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-sm overflow-x-auto">
         <div className="space-y-6">
-          {cancion.lineas.map((linea, idx) => {
-            const { chords, lyrics } = buildLine(linea.palabras);
-            return (
-              <pre
-                key={idx}
-                className="m-0 font-mono text-base md:text-lg leading-snug whitespace-pre"
-                style={{
-                  fontFamily:
-                    "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
-                }}
-              >
-                <span className="block text-sky-700 font-bold text-sm md:text-base min-h-[1.25em]">
-                  {chords.length ? chords : " "}
-                </span>
-                <span className="block text-slate-800">{lyrics || " "}</span>
-              </pre>
-            );
-          })}
+          {cancion.lineas.map((linea, idx) => (
+            <LineaVista key={idx} palabras={linea.palabras} />
+          ))}
         </div>
       </div>
 

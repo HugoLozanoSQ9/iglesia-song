@@ -103,6 +103,8 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
   const [coros, setCoros] = useState<CoroGuardado[]>([]);
   const [nombreCoro, setNombreCoro] = useState("Coro");
   const clipboardRef = useRef<Linea[] | null>(null);
+  const [clipboardStatus, setClipboardStatus] = useState<string>("");
+  const [coroStatus, setCoroStatus] = useState<string>("");
 
   useEffect(() => {
     if (historyRef.current.length === 0) {
@@ -277,18 +279,26 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
   const copySelectedLines = useCallback(() => {
     const range = getSelectedRange();
     if (!range) return false;
-    clipboardRef.current = JSON.parse(
+    const lines = JSON.parse(
       JSON.stringify(cancion.lineas.slice(range.from, range.to + 1))
-    );
+    ) as Linea[];
+    clipboardRef.current = lines;
+    setClipboardStatus(`📋 ${lines.length} línea(s) copiada(s) (listas para Pegar)`);
+    setCoroStatus("");
     return true;
   }, [cancion.lineas, selStart, selEnd]);
 
   const pasteLines = useCallback(() => {
-    if (!clipboardRef.current?.length) return false;
+    if (!clipboardRef.current?.length) {
+      setClipboardStatus("No hay líneas copiadas. Selecciona nº de línea y pulsa Copiar.");
+      return false;
+    }
     const insertAt = selEnd !== null ? selEnd + 1 : cancion.lineas.length;
     const nuevas = [...cancion.lineas];
-    nuevas.splice(insertAt, 0, ...JSON.parse(JSON.stringify(clipboardRef.current)));
+    const copia = JSON.parse(JSON.stringify(clipboardRef.current)) as Linea[];
+    nuevas.splice(insertAt, 0, ...copia);
     applyChange({ ...cancion, lineas: nuevas });
+    setClipboardStatus(`📌 Pegadas ${copia.length} línea(s)`);
     return true;
   }, [cancion, selEnd, applyChange]);
 
@@ -302,14 +312,19 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
       JSON.stringify(cancion.lineas.slice(range.from, range.to + 1))
     ) as Linea[];
     const nombre = nombreCoro.trim() || `Coro ${coros.length + 1}`;
+    // Solo guarda en la lista de coros. NO toca el portapapeles de líneas.
     setCoros((prev) => [...prev, { id: `${Date.now()}`, nombre, lineas }]);
+    setCoroStatus(`⭐ Coro "${nombre}" guardado. Usa el botón + ${nombre} para insertarlo.`);
+    setClipboardStatus("");
   };
 
   const insertarCoro = (coro: CoroGuardado) => {
     const insertAt = selEnd !== null ? selEnd + 1 : cancion.lineas.length;
     const nuevas = [...cancion.lineas];
-    nuevas.splice(insertAt, 0, ...JSON.parse(JSON.stringify(coro.lineas)));
+    const lineas = JSON.parse(JSON.stringify(coro.lineas)) as Linea[];
+    nuevas.splice(insertAt, 0, ...lineas);
     applyChange({ ...cancion, lineas: nuevas });
+    setCoroStatus(`➕ Insertado coro "${coro.nombre}" (${lineas.length} líneas)`);
   };
 
   const handlePasteText = (e: React.ClipboardEvent) => {
@@ -353,8 +368,13 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
         if (copySelectedLines()) e.preventDefault();
         return;
       }
-      if (mod && e.key === "v" && clipboardRef.current?.length && selStart !== null) {
-        if (pasteLines()) e.preventDefault();
+      if (mod && e.key === "v" && clipboardRef.current?.length) {
+        const tag = (e.target as HTMLElement)?.tagName;
+        const inField = tag === "INPUT" || tag === "TEXTAREA";
+        // No interceptar si está escribiendo en un campo de texto
+        if (!inField) {
+          if (pasteLines()) e.preventDefault();
+        }
         return;
       }
       if (e.key === "Escape") {
@@ -524,11 +544,24 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
               </button>
             ))}
             {range && (
-              <span className="text-xs text-violet-700 font-medium ml-auto">
+              <span className="text-xs text-violet-700 font-medium">
                 Líneas {range.from + 1}–{range.to + 1}
               </span>
             )}
+            <button
+              type="button"
+              onClick={onSave}
+              className="ml-auto px-4 py-1.5 bg-sky-600 text-white rounded-lg text-sm font-semibold hover:bg-sky-700 shadow-sm"
+            >
+              💾 Guardar
+            </button>
           </div>
+          {(clipboardStatus || coroStatus) && (
+            <div className="text-xs text-slate-600 flex flex-wrap gap-3">
+              {clipboardStatus && <span>{clipboardStatus}</span>}
+              {coroStatus && <span className="text-violet-700">{coroStatus}</span>}
+            </div>
+          )}
 
           <div className="flex flex-wrap items-center gap-2">
             {selectedPalabra ? (
