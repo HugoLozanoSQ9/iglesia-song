@@ -1,1 +1,899 @@
-[]
+[
+  {
+    "id": "1792726987278-9i2dr2b",
+    "titulo": "Juntos como hermanos",
+    "categoria": "entrada",
+    "lineas": [
+      {
+        "palabras": [
+          {
+            "texto": "Juntos",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "como"
+          },
+          {
+            "texto": "hermanos",
+            "acordes": [
+              {
+                "acorde": "Bm",
+                "index": 4
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Miembros",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "de"
+          },
+          {
+            "texto": "una"
+          },
+          {
+            "texto": "iglesia",
+            "acordes": [
+              {
+                "acorde": "A7",
+                "index": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Vamos",
+            "acordes": [
+              {
+                "acorde": "Bm",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "caminando",
+            "acordes": [
+              {
+                "acorde": "F#m",
+                "index": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Al",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "encuentro",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 4
+              }
+            ]
+          },
+          {
+            "texto": "del",
+            "acordes": [
+              {
+                "acorde": "A7",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "Señor",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 4
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Un"
+          },
+          {
+            "texto": "largo"
+          },
+          {
+            "texto": "caminar",
+            "acordes": [
+              {
+                "acorde": "A7",
+                "index": 5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Por"
+          },
+          {
+            "texto": "el"
+          },
+          {
+            "texto": "desierto",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 4
+              }
+            ]
+          },
+          {
+            "texto": "bajo"
+          },
+          {
+            "texto": "el"
+          },
+          {
+            "texto": "Sol",
+            "acordes": [
+              {
+                "acorde": "A7",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "No",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "podemos"
+          },
+          {
+            "texto": "avanzar",
+            "acordes": [
+              {
+                "acorde": "Bm",
+                "index": 0
+              },
+              {
+                "acorde": "F#m",
+                "index": 6
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Sin",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "la"
+          },
+          {
+            "texto": "ayuda",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 2
+              }
+            ]
+          },
+          {
+            "texto": "del",
+            "acordes": [
+              {
+                "acorde": "A7",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "Señor",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Juntos",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "como"
+          },
+          {
+            "texto": "hermanos",
+            "acordes": [
+              {
+                "acorde": "Bm",
+                "index": 4
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Miembros",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "de"
+          },
+          {
+            "texto": "una"
+          },
+          {
+            "texto": "iglesia",
+            "acordes": [
+              {
+                "acorde": "A7",
+                "index": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Vamos",
+            "acordes": [
+              {
+                "acorde": "Bm",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "caminando",
+            "acordes": [
+              {
+                "acorde": "F#m",
+                "index": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Al",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "encuentro",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 4
+              }
+            ]
+          },
+          {
+            "texto": "del",
+            "acordes": [
+              {
+                "acorde": "A7",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "Señor",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 4
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Unidos"
+          },
+          {
+            "texto": "al"
+          },
+          {
+            "texto": "rezar",
+            "acordes": [
+              {
+                "acorde": "A7",
+                "index": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Unidos",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 2
+              }
+            ]
+          },
+          {
+            "texto": "en"
+          },
+          {
+            "texto": "una"
+          },
+          {
+            "texto": "canción",
+            "acordes": [
+              {
+                "acorde": "A7",
+                "index": 5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Viviremos",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "nuestra",
+            "acordes": [
+              {
+                "acorde": "Bm",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "fe",
+            "acordes": [
+              {
+                "acorde": "F#m",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Con",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "la"
+          },
+          {
+            "texto": "ayuda",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 2
+              }
+            ]
+          },
+          {
+            "texto": "del",
+            "acordes": [
+              {
+                "acorde": "A7",
+                "index": 1
+              }
+            ]
+          },
+          {
+            "texto": "Señor",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Juntos",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "como"
+          },
+          {
+            "texto": "hermanos",
+            "acordes": [
+              {
+                "acorde": "Bm",
+                "index": 4
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Miembros",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "de"
+          },
+          {
+            "texto": "una"
+          },
+          {
+            "texto": "iglesia",
+            "acordes": [
+              {
+                "acorde": "A7",
+                "index": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Vamos",
+            "acordes": [
+              {
+                "acorde": "Bm",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "caminando",
+            "acordes": [
+              {
+                "acorde": "F#m",
+                "index": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Al",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "encuentro",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 4
+              }
+            ]
+          },
+          {
+            "texto": "del",
+            "acordes": [
+              {
+                "acorde": "A7",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "Señor",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 4
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "La"
+          },
+          {
+            "texto": "iglesia"
+          },
+          {
+            "texto": "en"
+          },
+          {
+            "texto": "marcha"
+          },
+          {
+            "texto": "está",
+            "acordes": [
+              {
+                "acorde": "A7",
+                "index": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "A"
+          },
+          {
+            "texto": "un"
+          },
+          {
+            "texto": "mundo"
+          },
+          {
+            "texto": "nuevo",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "vamos"
+          },
+          {
+            "texto": "ya",
+            "acordes": [
+              {
+                "acorde": "A7",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Donde",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "reinará",
+            "acordes": [
+              {
+                "acorde": "Bm",
+                "index": 6
+              }
+            ]
+          },
+          {
+            "texto": "el"
+          },
+          {
+            "texto": "señor",
+            "acordes": [
+              {
+                "acorde": "F#m",
+                "index": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Donde",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "reinará",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 1
+              }
+            ]
+          },
+          {
+            "texto": "la",
+            "acordes": [
+              {
+                "acorde": "A7",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "paz",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Juntos",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "como"
+          },
+          {
+            "texto": "hermanos",
+            "acordes": [
+              {
+                "acorde": "Bm",
+                "index": 4
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Miembros",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "de"
+          },
+          {
+            "texto": "una"
+          },
+          {
+            "texto": "iglesia",
+            "acordes": [
+              {
+                "acorde": "A7",
+                "index": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Vamos",
+            "acordes": [
+              {
+                "acorde": "Bm",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "caminando",
+            "acordes": [
+              {
+                "acorde": "F#m",
+                "index": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Al",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "encuentro",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 4
+              }
+            ]
+          },
+          {
+            "texto": "del",
+            "acordes": [
+              {
+                "acorde": "A7",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "Señor",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 4
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": ""
+          }
+        ]
+      }
+    ],
+    "creadoEn": "2026-10-23T03:43:07.278Z",
+    "actualizadoEn": "2026-10-23T03:55:33.440Z"
+  }
+]
