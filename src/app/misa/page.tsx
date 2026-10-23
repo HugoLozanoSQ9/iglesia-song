@@ -2,14 +2,15 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getMisas, eliminarMisa, isAdminAutenticado } from "@/lib/storage";
+import { getMisas, eliminarMisa, isAdminAutenticado, loadAllData } from "@/lib/storage";
 import { Misa } from "@/types/song";
 
 export default function MisasPage() {
   const [misas, setMisas] = useState<Misa[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
 
-  const cargar = () => {
+  const cargar = async () => {
+    await loadAllData();
     setMisas(
       getMisas().sort((a, b) => (b.fecha || "").localeCompare(a.fecha || "") || b.actualizadoEn.localeCompare(a.actualizadoEn))
     );
@@ -17,13 +18,17 @@ export default function MisasPage() {
   };
 
   useEffect(() => {
-    cargar();
+    void cargar();
   }, []);
 
-  const handleEliminar = (id: string, titulo: string) => {
+  const handleEliminar = async (id: string, titulo: string) => {
     if (confirm(`¿Eliminar el librito "${titulo}"?`)) {
-      eliminarMisa(id);
-      cargar();
+      try {
+        await eliminarMisa(id);
+        await cargar();
+      } catch (e) {
+        alert(e instanceof Error ? e.message : "Error al eliminar");
+      }
     }
   };
 

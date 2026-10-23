@@ -3,12 +3,10 @@
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import SongEditor from "@/components/SongEditor";
-import {
-  isAdminAutenticado,
+import { isAdminAutenticado,
   crearCancionVacia,
   guardarCancion,
-  getCategorias,
-} from "@/lib/storage";
+  getCategorias, loadAllData } from "@/lib/storage";
 import { Cancion, Categoria } from "@/types/song";
 
 function NuevaCancionContent() {
@@ -25,19 +23,26 @@ function NuevaCancionContent() {
       router.replace("/admin/login");
       return;
     }
-    const cats = getCategorias();
-    setCategorias(cats);
-    const catId = cats.find((c) => c.id === categoriaParam)?.id || cats[0]?.id || "entrada";
-    setCancion(crearCancionVacia(catId));
+    loadAllData().then(() => {
+      const cats = getCategorias();
+      setCategorias(cats);
+      const catId = cats.find((c) => c.id === categoriaParam)?.id || cats[0]?.id || "entrada";
+      setCancion(crearCancionVacia(catId));
+    });
   }, [router, categoriaParam]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!cancion) return;
     if (!cancion.titulo.trim()) {
       alert("Ponle un título a la canción");
       return;
     }
-    guardarCancion(cancion);
+    try {
+      await guardarCancion(cancion);
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "Error al guardar. ¿npm run dev en local?");
+      return;
+    }
     setSaved(true);
     setTimeout(() => {
       router.push(`/cancion/${cancion.id}`);

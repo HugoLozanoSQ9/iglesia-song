@@ -3,7 +3,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { getCategorias, getCancionesPorCategoria, isAdminAutenticado } from "@/lib/storage";
+import { getCategorias, getCancionesPorCategoria, isAdminAutenticado, loadAllData } from "@/lib/storage";
 import { Cancion, Categoria } from "@/types/song";
 
 function CategoriaContent() {
@@ -15,11 +15,13 @@ function CategoriaContent() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
+    loadAllData().then(() => {
     const cats = getCategorias();
     const cat = cats.find((c) => c.id === id) || null;
     setCategoria(cat);
     setCanciones(getCancionesPorCategoria(id));
     setIsAdmin(isAdminAutenticado());
+    });
   }, [id]);
 
   if (!categoria) {

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import CategoryCard from "@/components/CategoryCard";
-import { getCategorias, getCanciones } from "@/lib/storage";
+import { getCategorias, getCanciones, loadAllData } from "@/lib/storage";
 import { Categoria } from "@/types/song";
 
 export default function HomePage() {
@@ -10,14 +10,16 @@ export default function HomePage() {
   const [counts, setCounts] = useState<Record<string, number>>({});
 
   useEffect(() => {
-    const cats = getCategorias();
-    setCategorias(cats);
-    const canciones = getCanciones();
-    const c: Record<string, number> = {};
-    cats.forEach((cat) => {
-      c[cat.id] = canciones.filter((s) => s.categoria === cat.id).length;
+    loadAllData().then(() => {
+      const cats = getCategorias();
+      setCategorias(cats);
+      const canciones = getCanciones();
+      const c: Record<string, number> = {};
+      cats.forEach((cat) => {
+        c[cat.id] = canciones.filter((s) => s.categoria === cat.id).length;
+      });
+      setCounts(c);
     });
-    setCounts(c);
   }, []);
 
   return (

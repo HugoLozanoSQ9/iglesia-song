@@ -3,12 +3,10 @@
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useParams } from "next/navigation";
 import SongEditor from "@/components/SongEditor";
-import {
-  isAdminAutenticado,
+import { isAdminAutenticado,
   getCancion,
   guardarCancion,
-  getCategorias,
-} from "@/lib/storage";
+  getCategorias, loadAllData } from "@/lib/storage";
 import { Cancion, Categoria } from "@/types/song";
 
 function EditarContent() {
@@ -25,22 +23,29 @@ function EditarContent() {
       router.replace("/admin/login");
       return;
     }
-    const c = getCancion(id);
-    if (!c) {
-      router.replace("/admin");
-      return;
-    }
-    setCancion(c);
-    setCategorias(getCategorias());
+    loadAllData().then(() => {
+      const c = getCancion(id);
+      if (!c) {
+        router.replace("/admin");
+        return;
+      }
+      setCancion(c);
+      setCategorias(getCategorias());
+    });
   }, [router, id]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!cancion) return;
     if (!cancion.titulo.trim()) {
       alert("Ponle un título a la canción");
       return;
     }
-    guardarCancion(cancion);
+    try {
+      await guardarCancion(cancion);
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "Error al guardar");
+      return;
+    }
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };

@@ -4,7 +4,7 @@ import { useEffect, useState, Suspense } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import SongViewer from "@/components/SongViewer";
-import { getCancion, isAdminAutenticado } from "@/lib/storage";
+import { getCancion, isAdminAutenticado, loadAllData } from "@/lib/storage";
 import { Cancion } from "@/types/song";
 
 function CancionContent() {
@@ -15,8 +15,10 @@ function CancionContent() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
+    loadAllData().then(() => {
     setCancion(getCancion(id));
     setIsAdmin(isAdminAutenticado());
+    });
   }, [id]);
 
   if (!cancion) {

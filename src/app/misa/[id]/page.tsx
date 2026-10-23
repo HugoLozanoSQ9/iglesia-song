@@ -3,7 +3,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { getMisa, getCancion, getCategorias } from "@/lib/storage";
+import { getMisa, getCancion, getCategorias, loadAllData } from "@/lib/storage";
 import { descargarMisaPDF } from "@/lib/pdf";
 import { Cancion, Categoria, Misa } from "@/types/song";
 import SongViewer from "@/components/SongViewer";
@@ -19,6 +19,7 @@ function MisaContent() {
   const [cancionActiva, setCancionActiva] = useState<string | null>(null);
 
   useEffect(() => {
+    loadAllData().then(() => {
     const m = getMisa(id);
     setMisa(m);
     const cats = getCategorias().sort((a, b) => a.orden - b.orden);
@@ -31,6 +32,7 @@ function MisaContent() {
       });
       setCanciones(map);
     }
+    });
   }, [id]);
 
   if (!misa) {

@@ -1,20 +1,74 @@
-import { Cancion, Categoria, CATEGORIAS_DEFAULT, Misa, getAcordesDePalabra } from "@/types/song";
+"use client";
 
-const KEY_CANCIONES = "iglesia-canciones";
-const KEY_CATEGORIAS = "iglesia-categorias";
-const KEY_MISAS = "iglesia-misas";
+import {
+  Cancion,
+  Categoria,
+  CATEGORIAS_DEFAULT,
+  Misa,
+  getAcordesDePalabra,
+} from "@/types/song";
+
 const KEY_ADMIN = "iglesia-admin-auth";
+const KEY_ADMIN_SECRET = "iglesia-admin-key";
+
+// Caché en memoria (se llena desde los JSON del repo)
+let cacheCanciones: Cancion[] | null = null;
+let cacheCategorias: Categoria[] | null = null;
+let cacheMisas: Misa[] | null = null;
+let loadPromise: Promise<void> | null = null;
+
+async function fetchJson<T>(url: string, fallback: T): Promise<T> {
+  try {
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) return fallback;
+    return (await res.json()) as T;
+  } catch {
+    return fallback;
+  }
+}
+
+/** Carga canciones, categorías y misas desde public/data/*.json */
+export async function loadAllData(): Promise<void> {
+  if (loadPromise) return loadPromise;
+  loadPromise = (async () => {
+    const [canciones, categorias, misas] = await Promise.all([
+      fetchJson<Cancion[]>("/data/canciones.json", []),
+      fetchJson<Categoria[]>("/data/categorias.json", CATEGORIAS_DEFAULT),
+      fetchJson<Misa[]>("/data/misas.json", []),
+    ]);
+    cacheCanciones = canciones;
+    cacheCategorias = categorias?.length ? categorias : CATEGORIAS_DEFAULT;
+    cacheMisas = misas;
+  })();
+  await loadPromise;
+  loadPromise = null;
+}
+
+async function persist(resource: "canciones" | "categorias" | "misas", data: unknown) {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  const key =
+    typeof window !== "undefined" ? sessionStorage.getItem(KEY_ADMIN_SECRET) || "" : "";
+  if (key) headers["x-admin-key"] = key;
+
+  const res = await fetch(`/api/data/${resource}`, {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(
+      (err as { error?: string }).error ||
+        "No se pudo guardar el archivo JSON. ¿Estás en local con npm run dev?"
+    );
+  }
+}
 
 // ---- Canciones ----
 
 export function getCanciones(): Cancion[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const data = localStorage.getItem(KEY_CANCIONES);
-    return data ? JSON.parse(data) : [];
-  } catch {
-    return [];
-  }
+  return cacheCanciones || [];
 }
 
 export function getCancionesPorCategoria(categoriaId: string): Cancion[] {
@@ -27,46 +81,37 @@ export function getCancion(id: string): Cancion | null {
   return getCanciones().find((c) => c.id === id) || null;
 }
 
-export function guardarCancion(cancion: Cancion): void {
-  const todas = getCanciones();
+export async function guardarCancion(cancion: Cancion): Promise<void> {
+  await loadAllData();
+  const todas = [...getCanciones()];
   const idx = todas.findIndex((c) => c.id === cancion.id);
-  if (idx >= 0) {
-    todas[idx] = { ...cancion, actualizadoEn: new Date().toISOString() };
-  } else {
-    todas.push(cancion);
-  }
-  localStorage.setItem(KEY_CANCIONES, JSON.stringify(todas));
+  const actualizada = { ...cancion, actualizadoEn: new Date().toISOString() };
+  if (idx >= 0) todas[idx] = actualizada;
+  else todas.push(actualizada);
+  cacheCanciones = todas;
+  await persist("canciones", todas);
 }
 
-export function eliminarCancion(id: string): void {
+export async function eliminarCancion(id: string): Promise<void> {
+  await loadAllData();
   const filtradas = getCanciones().filter((c) => c.id !== id);
-  localStorage.setItem(KEY_CANCIONES, JSON.stringify(filtradas));
+  cacheCanciones = filtradas;
+  await persist("canciones", filtradas);
 }
 
 // ---- Categorías ----
 
 export function getCategorias(): Categoria[] {
-  if (typeof window === "undefined") return CATEGORIAS_DEFAULT;
-  try {
-    const data = localStorage.getItem(KEY_CATEGORIAS);
-    if (data) {
-      const custom = JSON.parse(data) as Categoria[];
-      // Merge: keep defaults + custom
-      const ids = new Set(custom.map((c) => c.id));
-      const defaultsFaltantes = CATEGORIAS_DEFAULT.filter((c) => !ids.has(c.id));
-      return [...defaultsFaltantes, ...custom].sort((a, b) => a.orden - b.orden);
-    }
-    return CATEGORIAS_DEFAULT;
-  } catch {
-    return CATEGORIAS_DEFAULT;
-  }
+  return cacheCategorias?.length ? cacheCategorias : CATEGORIAS_DEFAULT;
 }
 
-export function guardarCategorias(categorias: Categoria[]): void {
-  localStorage.setItem(KEY_CATEGORIAS, JSON.stringify(categorias));
+export async function guardarCategorias(cats: Categoria[]): Promise<void> {
+  cacheCategorias = cats;
+  await persist("categorias", cats);
 }
 
-export function agregarCategoria(nombre: string): Categoria {
+export async function agregarCategoria(nombre: string): Promise<Categoria> {
+  await loadAllData();
   const actuales = getCategorias();
   const nueva: Categoria = {
     id: nombre
@@ -80,11 +125,50 @@ export function agregarCategoria(nombre: string): Categoria {
     icono: "🎵",
   };
   const actualizadas = [...actuales, nueva];
-  guardarCategorias(actualizadas);
+  await guardarCategorias(actualizadas);
   return nueva;
 }
 
-// ---- Auth simple (MVP) ----
+// ---- Misas ----
+
+export function getMisas(): Misa[] {
+  return cacheMisas || [];
+}
+
+export function getMisa(id: string): Misa | null {
+  return getMisas().find((m) => m.id === id) || null;
+}
+
+export async function guardarMisa(misa: Misa): Promise<void> {
+  await loadAllData();
+  const todas = [...getMisas()];
+  const idx = todas.findIndex((m) => m.id === misa.id);
+  const actualizada = { ...misa, actualizadoEn: new Date().toISOString() };
+  if (idx >= 0) todas[idx] = actualizada;
+  else todas.push(actualizada);
+  cacheMisas = todas;
+  await persist("misas", todas);
+}
+
+export async function eliminarMisa(id: string): Promise<void> {
+  await loadAllData();
+  const filtradas = getMisas().filter((m) => m.id !== id);
+  cacheMisas = filtradas;
+  await persist("misas", filtradas);
+}
+
+export function crearMisaVacia(titulo = "Misa del domingo"): Misa {
+  return {
+    id: generarId(),
+    titulo,
+    fecha: new Date().toISOString().slice(0, 10),
+    seleccion: {},
+    creadoEn: new Date().toISOString(),
+    actualizadoEn: new Date().toISOString(),
+  };
+}
+
+// ---- Admin (solo UI local; la llave se manda al guardar JSON) ----
 
 export function isAdminAutenticado(): boolean {
   if (typeof window === "undefined") return false;
@@ -92,9 +176,11 @@ export function isAdminAutenticado(): boolean {
 }
 
 export function loginAdmin(usuario: string, password: string): boolean {
-  // Credenciales simples para MVP. Cambiar después.
-  if (usuario === "admin" && password === "iglesia2026") {
+  const userOk = process.env.NEXT_PUBLIC_ADMIN_USER || "admin";
+  const passOk = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "iglesia2026";
+  if (usuario === userOk && password === passOk) {
     localStorage.setItem(KEY_ADMIN, "true");
+    sessionStorage.setItem(KEY_ADMIN_SECRET, password);
     return true;
   }
   return false;
@@ -102,6 +188,7 @@ export function loginAdmin(usuario: string, password: string): boolean {
 
 export function logoutAdmin(): void {
   localStorage.removeItem(KEY_ADMIN);
+  sessionStorage.removeItem(KEY_ADMIN_SECRET);
 }
 
 // ---- Helpers ----
@@ -115,17 +202,12 @@ export function crearCancionVacia(categoria: string, titulo = "Nueva canción"):
     id: generarId(),
     titulo,
     categoria,
-    lineas: [
-      {
-        palabras: [{ texto: "" }],
-      },
-    ],
+    lineas: [{ palabras: [{ texto: "" }] }],
     creadoEn: new Date().toISOString(),
     actualizadoEn: new Date().toISOString(),
   };
 }
 
-/** Convierte texto plano a estructura de líneas (sin acordes) */
 export function textoALineas(texto: string): { palabras: { texto: string }[] }[] {
   return texto
     .split("\n")
@@ -139,7 +221,6 @@ export function textoALineas(texto: string): { palabras: { texto: string }[] }[]
     }));
 }
 
-/** Exporta canción a texto: varios acordes por palabra encima de cada letra */
 export function cancionATexto(cancion: Cancion): string {
   const lineasTexto = cancion.lineas.map((linea) => {
     const cParts: string[] = [];
@@ -166,49 +247,4 @@ export function cancionATexto(cancion: Cancion): string {
   });
 
   return `${cancion.titulo}\n${cancion.categoria.toUpperCase()}\n\n${lineasTexto.join("\n\n")}`;
-}
-
-
-// ---- Misas (librito del día) ----
-
-export function getMisas(): Misa[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const data = localStorage.getItem(KEY_MISAS);
-    return data ? JSON.parse(data) : [];
-  } catch {
-    return [];
-  }
-}
-
-export function getMisa(id: string): Misa | null {
-  return getMisas().find((m) => m.id === id) || null;
-}
-
-export function guardarMisa(misa: Misa): void {
-  const todas = getMisas();
-  const idx = todas.findIndex((m) => m.id === misa.id);
-  const actualizada = { ...misa, actualizadoEn: new Date().toISOString() };
-  if (idx >= 0) {
-    todas[idx] = actualizada;
-  } else {
-    todas.push(actualizada);
-  }
-  localStorage.setItem(KEY_MISAS, JSON.stringify(todas));
-}
-
-export function eliminarMisa(id: string): void {
-  const filtradas = getMisas().filter((m) => m.id !== id);
-  localStorage.setItem(KEY_MISAS, JSON.stringify(filtradas));
-}
-
-export function crearMisaVacia(titulo = "Misa del domingo"): Misa {
-  return {
-    id: generarId(),
-    titulo,
-    fecha: new Date().toISOString().slice(0, 10),
-    seleccion: {},
-    creadoEn: new Date().toISOString(),
-    actualizadoEn: new Date().toISOString(),
-  };
 }

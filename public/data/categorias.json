@@ -1,0 +1,62 @@
+[
+  {
+    "id": "entrada",
+    "nombre": "Entrada",
+    "orden": 1,
+    "icono": "🚪"
+  },
+  {
+    "id": "senor-ten-piedad",
+    "nombre": "Señor ten piedad",
+    "orden": 2,
+    "icono": "🙏"
+  },
+  {
+    "id": "gloria",
+    "nombre": "Gloria",
+    "orden": 3,
+    "icono": "✨"
+  },
+  {
+    "id": "salmo",
+    "nombre": "Salmo",
+    "orden": 4,
+    "icono": "📖"
+  },
+  {
+    "id": "aleluya",
+    "nombre": "Aleluya",
+    "orden": 5,
+    "icono": "🙌"
+  },
+  {
+    "id": "ofertorio",
+    "nombre": "Ofertorio",
+    "orden": 6,
+    "icono": "🍞"
+  },
+  {
+    "id": "santo",
+    "nombre": "Santo",
+    "orden": 7,
+    "icono": "⛪"
+  },
+  {
+    "id": "cordero-de-dios",
+    "nombre": "Cordero de Dios",
+    "orden": 8,
+    "icono": "🐑"
+  },
+  {
+    "id": "comunion",
+    "nombre": "Comunión",
+    "orden": 9,
+    "icono": "🍷"
+  },
+  {
+    "id": "salida",
+    "nombre": "Salida",
+    "orden": 10,
+    "icono": "🚶"
+  }
+]

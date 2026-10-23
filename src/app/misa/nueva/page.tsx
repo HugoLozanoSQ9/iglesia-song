@@ -3,12 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  getCategorias,
+import { getCategorias,
   getCancionesPorCategoria,
   crearMisaVacia,
-  guardarMisa,
-} from "@/lib/storage";
+  guardarMisa, loadAllData } from "@/lib/storage";
 import { Cancion, Categoria, Misa } from "@/types/song";
 
 export default function NuevaMisaPage() {
@@ -18,6 +16,7 @@ export default function NuevaMisaPage() {
   const [cancionesPorCat, setCancionesPorCat] = useState<Record<string, Cancion[]>>({});
 
   useEffect(() => {
+    loadAllData().then(() => {
     const cats = getCategorias().sort((a, b) => a.orden - b.orden);
     setCategorias(cats);
     const map: Record<string, Cancion[]> = {};
@@ -26,6 +25,7 @@ export default function NuevaMisaPage() {
     });
     setCancionesPorCat(map);
     setMisa(crearMisaVacia());
+    });
   }, []);
 
   const setSeleccion = (catId: string, cancionId: string) => {
@@ -45,7 +45,7 @@ export default function NuevaMisaPage() {
       alert("Ponle un título al librito");
       return;
     }
-    guardarMisa(misa);
+    void guardarMisa(misa);
     router.push(`/misa/${misa.id}`);
   };
 

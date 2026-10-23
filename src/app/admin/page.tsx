@@ -3,13 +3,11 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  isAdminAutenticado,
+import { isAdminAutenticado,
   getCanciones,
   getCategorias,
   eliminarCancion,
-  agregarCategoria,
-} from "@/lib/storage";
+  agregarCategoria, loadAllData } from "@/lib/storage";
 import { Cancion, Categoria } from "@/types/song";
 
 export default function AdminPage() {
@@ -19,7 +17,8 @@ export default function AdminPage() {
   const [nuevaCat, setNuevaCat] = useState("");
   const [showAddCat, setShowAddCat] = useState(false);
 
-  const cargar = () => {
+  const cargar = async () => {
+    await loadAllData();
     setCanciones(getCanciones().sort((a, b) => b.actualizadoEn.localeCompare(a.actualizadoEn)));
     setCategorias(getCategorias());
   };
@@ -32,19 +31,27 @@ export default function AdminPage() {
     cargar();
   }, [router]);
 
-  const handleEliminar = (id: string, titulo: string) => {
+  const handleEliminar = async (id: string, titulo: string) => {
     if (confirm(`¿Eliminar la canción "${titulo}"?`)) {
-      eliminarCancion(id);
-      cargar();
+      try {
+        await eliminarCancion(id);
+        await cargar();
+      } catch (e) {
+        alert(e instanceof Error ? e.message : "Error al eliminar");
+      }
     }
   };
 
-  const handleAddCategoria = () => {
+  const handleAddCategoria = async () => {
     if (!nuevaCat.trim()) return;
-    agregarCategoria(nuevaCat.trim());
-    setNuevaCat("");
-    setShowAddCat(false);
-    cargar();
+    try {
+      await agregarCategoria(nuevaCat.trim());
+      setNuevaCat("");
+      setShowAddCat(false);
+      await cargar();
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "Error al guardar categoría");
+    }
   };
 
   return (

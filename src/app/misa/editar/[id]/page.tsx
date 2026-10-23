@@ -3,12 +3,10 @@
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
-import {
-  getCategorias,
+import { getCategorias,
   getCancionesPorCategoria,
   getMisa,
-  guardarMisa,
-} from "@/lib/storage";
+  guardarMisa, loadAllData } from "@/lib/storage";
 import { Cancion, Categoria, Misa } from "@/types/song";
 
 function EditarMisaContent() {
@@ -21,6 +19,7 @@ function EditarMisaContent() {
   const [cancionesPorCat, setCancionesPorCat] = useState<Record<string, Cancion[]>>({});
 
   useEffect(() => {
+    loadAllData().then(() => {
     const m = getMisa(id);
     if (!m) {
       router.replace("/misa");
@@ -34,6 +33,7 @@ function EditarMisaContent() {
       map[c.id] = getCancionesPorCategoria(c.id);
     });
     setCancionesPorCat(map);
+    });
   }, [id, router]);
 
   const setSeleccion = (catId: string, cancionId: string) => {
@@ -53,7 +53,7 @@ function EditarMisaContent() {
       alert("Ponle un título al librito");
       return;
     }
-    guardarMisa(misa);
+    void guardarMisa(misa);
     router.push(`/misa/${misa.id}`);
   };
 
