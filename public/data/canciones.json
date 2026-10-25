@@ -2340,5 +2340,4079 @@
     ],
     "creadoEn": "2026-10-23T04:23:28.357Z",
     "actualizadoEn": "2026-10-23T04:37:30.792Z"
+  },
+  {
+    "id": "1792731084908-gxte9lt",
+    "titulo": "Salmo",
+    "categoria": "salmo",
+    "lineas": [
+      {
+        "palabras": [
+          {
+            "texto": "El salmo casi siempre va a ser una secuencia de acordes arpegiados en Re"
+          },
+          {
+            "texto": ""
+          },
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Las cuales van a ser: D - Bm - G - A - D"
+          },
+          {
+            "texto": ""
+          },
+          {
+            "texto": ""
+          },
+          {
+            "texto": ""
+          },
+          {
+            "texto": "por ejemplo: "
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "El señor, nos ha mostrado, su amor y su lealtad ",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 6
+              },
+              {
+                "acorde": "Bm",
+                "index": 18
+              },
+              {
+                "acorde": "G",
+                "index": 32
+              },
+              {
+                "acorde": "A",
+                "index": 38
+              },
+              {
+                "acorde": "D",
+                "index": 45
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Se canta después de cada letanía"
+          },
+          {
+            "texto": ""
+          },
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Puedes tocarlo de fondo en las letanías en voz baja"
+          }
+        ]
+      }
+    ],
+    "creadoEn": "2026-10-23T04:51:24.908Z",
+    "actualizadoEn": "2026-10-23T04:56:39.296Z"
+  },
+  {
+    "id": "1792731473965-439pdsv",
+    "titulo": "Aleluya",
+    "categoria": "aleluya",
+    "lineas": [
+      {
+        "palabras": [
+          {
+            "texto": "El aleluya se canta primero una parte y luego otra, igual va en Re y puede ir arpegiado"
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Aleluya",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 4
+              }
+            ]
+          },
+          {
+            "texto": "Aleluya",
+            "acordes": [
+              {
+                "acorde": "Bm",
+                "index": 4
+              }
+            ]
+          },
+          {
+            "texto": "Aleluya",
+            "acordes": [
+              {
+                "acorde": "G-A",
+                "index": 2
+              },
+              {
+                "acorde": "D",
+                "index": 6
+              }
+            ]
+          },
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Aquí el sacerdote dice algo pero seguimos tocando \"bajito\""
+          },
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Aleluya",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 4
+              }
+            ]
+          },
+          {
+            "texto": "Aleluya",
+            "acordes": [
+              {
+                "acorde": "Bm",
+                "index": 4
+              }
+            ]
+          },
+          {
+            "texto": "Aleluya",
+            "acordes": [
+              {
+                "acorde": "G-A",
+                "index": 2
+              },
+              {
+                "acorde": "D",
+                "index": 6
+              }
+            ]
+          },
+          {
+            "texto": ""
+          }
+        ]
+      }
+    ],
+    "creadoEn": "2026-10-23T04:57:53.966Z",
+    "actualizadoEn": "2026-10-23T05:03:41.607Z"
+  },
+  {
+    "id": "1792732314195-vb9457z",
+    "titulo": "Saber que vendrás",
+    "categoria": "ofertorio",
+    "lineas": [
+      {
+        "palabras": [
+          {
+            "texto": "En"
+          },
+          {
+            "texto": "este"
+          },
+          {
+            "texto": "mundo"
+          },
+          {
+            "texto": "que"
+          },
+          {
+            "texto": "Cristo"
+          },
+          {
+            "texto": "nos"
+          },
+          {
+            "texto": "da"
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "hacemos"
+          },
+          {
+            "texto": "la"
+          },
+          {
+            "texto": "ofrenda"
+          },
+          {
+            "texto": "del"
+          },
+          {
+            "texto": "pan,"
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "el"
+          },
+          {
+            "texto": "pan"
+          },
+          {
+            "texto": "de"
+          },
+          {
+            "texto": "nuestro"
+          },
+          {
+            "texto": "trabajo"
+          },
+          {
+            "texto": "sin"
+          },
+          {
+            "texto": "fin,"
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "el"
+          },
+          {
+            "texto": "vino"
+          },
+          {
+            "texto": "de"
+          },
+          {
+            "texto": "nuestro"
+          },
+          {
+            "texto": "cantar."
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Traigo"
+          },
+          {
+            "texto": "ante"
+          },
+          {
+            "texto": "Ti,"
+          },
+          {
+            "texto": "nuestra"
+          },
+          {
+            "texto": "justa"
+          },
+          {
+            "texto": "inquietud,"
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "amar"
+          },
+          {
+            "texto": "la"
+          },
+          {
+            "texto": "justicia"
+          },
+          {
+            "texto": "y"
+          },
+          {
+            "texto": "la"
+          },
+          {
+            "texto": "paz."
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Saber"
+          },
+          {
+            "texto": "que"
+          },
+          {
+            "texto": "vendrás,"
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "saber"
+          },
+          {
+            "texto": "que"
+          },
+          {
+            "texto": "estarás,"
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "partiendo"
+          },
+          {
+            "texto": "a"
+          },
+          {
+            "texto": "los"
+          },
+          {
+            "texto": "hombres"
+          },
+          {
+            "texto": "tu"
+          },
+          {
+            "texto": "pan."
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "La"
+          },
+          {
+            "texto": "fe"
+          },
+          {
+            "texto": "de"
+          },
+          {
+            "texto": "todos"
+          },
+          {
+            "texto": "los"
+          },
+          {
+            "texto": "hombres"
+          },
+          {
+            "texto": "sin"
+          },
+          {
+            "texto": "luz"
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "la"
+          },
+          {
+            "texto": "pena"
+          },
+          {
+            "texto": "y"
+          },
+          {
+            "texto": "el"
+          },
+          {
+            "texto": "triste"
+          },
+          {
+            "texto": "llorar,"
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "el"
+          },
+          {
+            "texto": "odio"
+          },
+          {
+            "texto": "de"
+          },
+          {
+            "texto": "los"
+          },
+          {
+            "texto": "que"
+          },
+          {
+            "texto": "mueren"
+          },
+          {
+            "texto": "sin"
+          },
+          {
+            "texto": "fe"
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "cansados"
+          },
+          {
+            "texto": "de"
+          },
+          {
+            "texto": "tanto"
+          },
+          {
+            "texto": "luchar."
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "En"
+          },
+          {
+            "texto": "la"
+          },
+          {
+            "texto": "patena"
+          },
+          {
+            "texto": "de"
+          },
+          {
+            "texto": "nuestra"
+          },
+          {
+            "texto": "oblación"
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "acepta"
+          },
+          {
+            "texto": "la"
+          },
+          {
+            "texto": "vida"
+          },
+          {
+            "texto": "Señor."
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Saber"
+          },
+          {
+            "texto": "que"
+          },
+          {
+            "texto": "vendrás,"
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "saber"
+          },
+          {
+            "texto": "que"
+          },
+          {
+            "texto": "estarás,"
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "partiendo"
+          },
+          {
+            "texto": "a"
+          },
+          {
+            "texto": "los"
+          },
+          {
+            "texto": "hombres"
+          },
+          {
+            "texto": "tu"
+          },
+          {
+            "texto": "pan."
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": ""
+          }
+        ]
+      }
+    ],
+    "creadoEn": "2026-10-23T05:11:54.195Z",
+    "actualizadoEn": "2026-10-23T05:19:08.489Z"
+  },
+  {
+    "id": "1792908475395-bz7g292",
+    "titulo": "Vino y pan en oblación",
+    "categoria": "ofertorio",
+    "lineas": [
+      {
+        "palabras": [
+          {
+            "texto": ""
+          },
+          {
+            "texto": "Entrada: "
+          },
+          {
+            "texto": "",
+            "acordes": [
+              {
+                "acorde": "Am",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "",
+            "acordes": [
+              {
+                "acorde": "Dm",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "",
+            "acordes": [
+              {
+                "acorde": "Am",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "",
+            "acordes": [
+              {
+                "acorde": "Dm",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Vino",
+            "acordes": [
+              {
+                "acorde": "Am",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "y"
+          },
+          {
+            "texto": "pan",
+            "acordes": [
+              {
+                "acorde": "Dm",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "en",
+            "acordes": [
+              {
+                "acorde": "Am",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "oblación",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "esperan",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "el",
+            "acordes": [
+              {
+                "acorde": "F",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "milagro"
+          },
+          {
+            "texto": "del",
+            "acordes": [
+              {
+                "acorde": "A#",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "Señor.",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 4
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Ve",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "nuestra"
+          },
+          {
+            "texto": "ofrenda",
+            "acordes": [
+              {
+                "acorde": "Em",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "sobre",
+            "acordes": [
+              {
+                "acorde": "F",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "tu"
+          },
+          {
+            "texto": "santo"
+          },
+          {
+            "texto": "altar:",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "era",
+            "acordes": [
+              {
+                "acorde": "G#",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "en"
+          },
+          {
+            "texto": "los"
+          },
+          {
+            "texto": "campos",
+            "acordes": [
+              {
+                "acorde": "D#",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "dulce",
+            "acordes": [
+              {
+                "acorde": "C#",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "vid",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "y"
+          },
+          {
+            "texto": "trigal.",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Pero",
+            "acordes": [
+              {
+                "acorde": "Am",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "tú,",
+            "acordes": [
+              {
+                "acorde": "Dm",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "por",
+            "acordes": [
+              {
+                "acorde": "Am",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "tu"
+          },
+          {
+            "texto": "bondad",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "transformas",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "nuestra",
+            "acordes": [
+              {
+                "acorde": "F",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "ofrenda"
+          },
+          {
+            "texto": "en"
+          },
+          {
+            "texto": "ti",
+            "acordes": [
+              {
+                "acorde": "A#",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "Señor.",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 4
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Toma",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "mi"
+          },
+          {
+            "texto": "vida",
+            "acordes": [
+              {
+                "acorde": "Em",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "y",
+            "acordes": [
+              {
+                "acorde": "F",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "también"
+          },
+          {
+            "texto": "cambiará.",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Llena",
+            "acordes": [
+              {
+                "acorde": "G#",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "mi"
+          },
+          {
+            "texto": "alma",
+            "acordes": [
+              {
+                "acorde": "D#",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "de",
+            "acordes": [
+              {
+                "acorde": "C#",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "tu"
+          },
+          {
+            "texto": "gracia",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "y"
+          },
+          {
+            "texto": "tu"
+          },
+          {
+            "texto": "paz.",
+            "acordes": [
+              {
+                "acorde": "G7",
+                "index": 2
+              }
+            ]
+          },
+          {
+            "texto": "Amén.",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              },
+              {
+                "acorde": "C",
+                "index": 4
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": ""
+          }
+        ]
+      }
+    ],
+    "creadoEn": "2026-10-25T06:07:55.395Z",
+    "actualizadoEn": "2026-10-25T06:20:04.588Z"
+  },
+  {
+    "id": "1792909362904-3d9gzk5",
+    "titulo": "Santo es el señor",
+    "categoria": "santo",
+    "lineas": [
+      {
+        "palabras": [
+          {
+            "texto": "Santo,",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "santo,",
+            "acordes": [
+              {
+                "acorde": "A7",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "santo,",
+            "acordes": [
+              {
+                "acorde": "Bm",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "es"
+          },
+          {
+            "texto": "el"
+          },
+          {
+            "texto": "señor",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 3
+              }
+            ]
+          },
+          {
+            "texto": "Dios"
+          },
+          {
+            "texto": "del"
+          },
+          {
+            "texto": "Universo",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 4
+              },
+              {
+                "acorde": "A",
+                "index": 7
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "llenos",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "están",
+            "acordes": [
+              {
+                "acorde": "A7",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "el"
+          },
+          {
+            "texto": "cielo",
+            "acordes": [
+              {
+                "acorde": "Bm",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "y"
+          },
+          {
+            "texto": "la"
+          },
+          {
+            "texto": "tierra",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "de"
+          },
+          {
+            "texto": "su"
+          },
+          {
+            "texto": "gloria.",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Hosanna",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "(ooo)"
+          },
+          {
+            "texto": "hosanna",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "(ooo)"
+          },
+          {
+            "texto": "hosanna",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "en"
+          },
+          {
+            "texto": "el"
+          },
+          {
+            "texto": "cielo.",
+            "acordes": [
+              {
+                "acorde": "A",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Hosanna",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "(ooo)"
+          },
+          {
+            "texto": "hosanna",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "(ooo)"
+          },
+          {
+            "texto": "hosanna",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "en"
+          },
+          {
+            "texto": "el"
+          },
+          {
+            "texto": "cielo.",
+            "acordes": [
+              {
+                "acorde": "A",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Bendito",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "es"
+          },
+          {
+            "texto": "el"
+          },
+          {
+            "texto": "que"
+          },
+          {
+            "texto": "viene",
+            "acordes": [
+              {
+                "acorde": "Bm",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "en"
+          },
+          {
+            "texto": "el"
+          },
+          {
+            "texto": "nombre",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "del"
+          },
+          {
+            "texto": "Señor",
+            "acordes": [
+              {
+                "acorde": "A",
+                "index": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Hosanna",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "(ooo)"
+          },
+          {
+            "texto": "hosanna",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "(ooo)"
+          },
+          {
+            "texto": "hosanna",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "en"
+          },
+          {
+            "texto": "el"
+          },
+          {
+            "texto": "cielo.",
+            "acordes": [
+              {
+                "acorde": "A",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "Hosanna",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "(ooo)"
+          },
+          {
+            "texto": "hosanna",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "(ooo)"
+          },
+          {
+            "texto": "hosanna",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "en"
+          },
+          {
+            "texto": "el"
+          },
+          {
+            "texto": "cielo.",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "",
+            "acordes": [
+              {
+                "acorde": "D",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": ""
+          }
+        ]
+      }
+    ],
+    "creadoEn": "2026-10-25T06:22:42.904Z",
+    "actualizadoEn": "2026-10-25T09:14:46.396Z"
+  },
+  {
+    "id": "1792909607999-wm8wuhs",
+    "titulo": "Cordero de Dios ",
+    "categoria": "cordero-de-dios",
+    "lineas": [
+      {
+        "palabras": [
+          {
+            "texto": "​Cordero",
+            "acordes": [
+              {
+                "acorde": "Am",
+                "index": 4
+              }
+            ]
+          },
+          {
+            "texto": "de"
+          },
+          {
+            "texto": "Dios,"
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​que"
+          },
+          {
+            "texto": "quitas",
+            "acordes": [
+              {
+                "acorde": "D7",
+                "index": 2
+              }
+            ]
+          },
+          {
+            "texto": "el",
+            "acordes": [
+              {
+                "acorde": "F",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "pecado",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 3
+              }
+            ]
+          },
+          {
+            "texto": "del"
+          },
+          {
+            "texto": "mundo,",
+            "acordes": [
+              {
+                "acorde": "Am",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​ten",
+            "acordes": [
+              {
+                "acorde": "Dm",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "piedad",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 4
+              }
+            ]
+          },
+          {
+            "texto": "de"
+          },
+          {
+            "texto": "nosotros,",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 3
+              },
+              {
+                "acorde": "F",
+                "index": 8
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​ten",
+            "acordes": [
+              {
+                "acorde": "Dm",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "piedad",
+            "acordes": [
+              {
+                "acorde": "E7",
+                "index": 5
+              }
+            ]
+          },
+          {
+            "texto": "de"
+          },
+          {
+            "texto": "nosotros",
+            "acordes": [
+              {
+                "acorde": "Am",
+                "index": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Cordero",
+            "acordes": [
+              {
+                "acorde": "Am",
+                "index": 4
+              }
+            ]
+          },
+          {
+            "texto": "de"
+          },
+          {
+            "texto": "Dios,"
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​que"
+          },
+          {
+            "texto": "quitas",
+            "acordes": [
+              {
+                "acorde": "D7",
+                "index": 2
+              }
+            ]
+          },
+          {
+            "texto": "el",
+            "acordes": [
+              {
+                "acorde": "F",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "pecado",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 3
+              }
+            ]
+          },
+          {
+            "texto": "del"
+          },
+          {
+            "texto": "mundo,",
+            "acordes": [
+              {
+                "acorde": "Am",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​danos",
+            "acordes": [
+              {
+                "acorde": "F",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "la"
+          },
+          {
+            "texto": "paz,",
+            "acordes": [
+              {
+                "acorde": "Dm",
+                "index": 1
+              }
+            ]
+          },
+          {
+            "texto": "danos",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "la"
+          },
+          {
+            "texto": "paz,",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "da-nos",
+            "acordes": [
+              {
+                "acorde": "Dm",
+                "index": 0
+              },
+              {
+                "acorde": "G",
+                "index": 4
+              }
+            ]
+          },
+          {
+            "texto": "da-nos",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              },
+              {
+                "acorde": "F",
+                "index": 4
+              }
+            ]
+          },
+          {
+            "texto": ", da-nos",
+            "acordes": [
+              {
+                "acorde": "Dm",
+                "index": 2
+              },
+              {
+                "acorde": "E7",
+                "index": 6
+              }
+            ]
+          },
+          {
+            "texto": "la paz",
+            "acordes": [
+              {
+                "acorde": "Am-A7",
+                "index": 5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "da-nos",
+            "acordes": [
+              {
+                "acorde": "Dm",
+                "index": 0
+              },
+              {
+                "acorde": "G",
+                "index": 4
+              }
+            ]
+          },
+          {
+            "texto": "da-nos",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              },
+              {
+                "acorde": "F",
+                "index": 4
+              }
+            ]
+          },
+          {
+            "texto": ", da-nos",
+            "acordes": [
+              {
+                "acorde": "Dm",
+                "index": 2
+              },
+              {
+                "acorde": "E7",
+                "index": 6
+              }
+            ]
+          },
+          {
+            "texto": "la paz",
+            "acordes": [
+              {
+                "acorde": "A",
+                "index": 5
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "creadoEn": "2026-10-25T06:26:47.999Z",
+    "actualizadoEn": "2026-10-25T06:45:35.499Z"
+  },
+  {
+    "id": "1792912207817-uszo6xb",
+    "titulo": "Una espiga dorada por el sol",
+    "categoria": "comunion",
+    "lineas": [
+      {
+        "palabras": [
+          {
+            "texto": "​Una",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "espiga"
+          },
+          {
+            "texto": "Dorada",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 3
+              }
+            ]
+          },
+          {
+            "texto": "por"
+          },
+          {
+            "texto": "el"
+          },
+          {
+            "texto": "sol",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​El"
+          },
+          {
+            "texto": "racimo"
+          },
+          {
+            "texto": "que"
+          },
+          {
+            "texto": "corta"
+          },
+          {
+            "texto": "el"
+          },
+          {
+            "texto": "viñador",
+            "acordes": [
+              {
+                "acorde": "D7",
+                "index": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Se"
+          },
+          {
+            "texto": "convierten",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 5
+              }
+            ]
+          },
+          {
+            "texto": "ahora",
+            "acordes": [
+              {
+                "acorde": "Cm",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "en"
+          },
+          {
+            "texto": "Pan"
+          },
+          {
+            "texto": "y"
+          },
+          {
+            "texto": "Vino",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "de"
+          },
+          {
+            "texto": "Amor"
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​En"
+          },
+          {
+            "texto": "el"
+          },
+          {
+            "texto": "Cuerpo",
+            "acordes": [
+              {
+                "acorde": "Am",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "y"
+          },
+          {
+            "texto": "la"
+          },
+          {
+            "texto": "Sangre",
+            "acordes": [
+              {
+                "acorde": "D7",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "del"
+          },
+          {
+            "texto": "Señor",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "",
+            "acordes": [
+              {
+                "acorde": "G7",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Se"
+          },
+          {
+            "texto": "convierten",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 5
+              }
+            ]
+          },
+          {
+            "texto": "ahora",
+            "acordes": [
+              {
+                "acorde": "Cm",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "en"
+          },
+          {
+            "texto": "Pan"
+          },
+          {
+            "texto": "y"
+          },
+          {
+            "texto": "Vino",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "de"
+          },
+          {
+            "texto": "Amor"
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​En"
+          },
+          {
+            "texto": "el"
+          },
+          {
+            "texto": "Cuerpo",
+            "acordes": [
+              {
+                "acorde": "Am",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "y"
+          },
+          {
+            "texto": "la"
+          },
+          {
+            "texto": "Sangre",
+            "acordes": [
+              {
+                "acorde": "D7",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "del"
+          },
+          {
+            "texto": "Señor",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​"
+          },
+          {
+            "texto": ""
+          },
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Compartimos",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "la"
+          },
+          {
+            "texto": "misma",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "comunión",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 6
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Somos"
+          },
+          {
+            "texto": "trigos"
+          },
+          {
+            "texto": "del"
+          },
+          {
+            "texto": "mismo"
+          },
+          {
+            "texto": "sembrador",
+            "acordes": [
+              {
+                "acorde": "D7",
+                "index": 5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Un"
+          },
+          {
+            "texto": "molino",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 1
+              }
+            ]
+          },
+          {
+            "texto": "la"
+          },
+          {
+            "texto": "vida",
+            "acordes": [
+              {
+                "acorde": "Cm",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "nos"
+          },
+          {
+            "texto": "tritura",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 4
+              }
+            ]
+          },
+          {
+            "texto": "con"
+          },
+          {
+            "texto": "dolor"
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Dios"
+          },
+          {
+            "texto": "nos"
+          },
+          {
+            "texto": "hace",
+            "acordes": [
+              {
+                "acorde": "Am",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "eucaristía",
+            "acordes": [
+              {
+                "acorde": "D7",
+                "index": 8
+              }
+            ]
+          },
+          {
+            "texto": "en"
+          },
+          {
+            "texto": "el"
+          },
+          {
+            "texto": "amor",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "",
+            "acordes": [
+              {
+                "acorde": "G7",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Un"
+          },
+          {
+            "texto": "molino",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 1
+              }
+            ]
+          },
+          {
+            "texto": "la"
+          },
+          {
+            "texto": "vida",
+            "acordes": [
+              {
+                "acorde": "Cm",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "nos"
+          },
+          {
+            "texto": "tritura",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 4
+              }
+            ]
+          },
+          {
+            "texto": "con"
+          },
+          {
+            "texto": "dolor"
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Dios"
+          },
+          {
+            "texto": "nos"
+          },
+          {
+            "texto": "hace",
+            "acordes": [
+              {
+                "acorde": "Am",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "eucaristía",
+            "acordes": [
+              {
+                "acorde": "D7",
+                "index": 8
+              }
+            ]
+          },
+          {
+            "texto": "en"
+          },
+          {
+            "texto": "el"
+          },
+          {
+            "texto": "amor",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​"
+          },
+          {
+            "texto": ""
+          },
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Como",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "granos"
+          },
+          {
+            "texto": "que"
+          },
+          {
+            "texto": "han"
+          },
+          {
+            "texto": "hecho",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "el"
+          },
+          {
+            "texto": "mismo"
+          },
+          {
+            "texto": "pan",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Como"
+          },
+          {
+            "texto": "notas"
+          },
+          {
+            "texto": "que"
+          },
+          {
+            "texto": "tejen"
+          },
+          {
+            "texto": "un"
+          },
+          {
+            "texto": "cantar",
+            "acordes": [
+              {
+                "acorde": "D7",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Como"
+          },
+          {
+            "texto": "gotas",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "de"
+          },
+          {
+            "texto": "agua",
+            "acordes": [
+              {
+                "acorde": "Cm",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "que"
+          },
+          {
+            "texto": "se"
+          },
+          {
+            "texto": "funden",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "en"
+          },
+          {
+            "texto": "el"
+          },
+          {
+            "texto": "mar"
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Los"
+          },
+          {
+            "texto": "Cristianos",
+            "acordes": [
+              {
+                "acorde": "Am",
+                "index": 3
+              }
+            ]
+          },
+          {
+            "texto": "un"
+          },
+          {
+            "texto": "cuerpo",
+            "acordes": [
+              {
+                "acorde": "D7",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "formarán",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 4
+              }
+            ]
+          },
+          {
+            "texto": "",
+            "acordes": [
+              {
+                "acorde": "G7",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Como"
+          },
+          {
+            "texto": "gotas",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "de"
+          },
+          {
+            "texto": "agua",
+            "acordes": [
+              {
+                "acorde": "Cm",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "que"
+          },
+          {
+            "texto": "se"
+          },
+          {
+            "texto": "funden",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "en"
+          },
+          {
+            "texto": "el"
+          },
+          {
+            "texto": "mar"
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Los"
+          },
+          {
+            "texto": "Cristianos",
+            "acordes": [
+              {
+                "acorde": "Am",
+                "index": 3
+              }
+            ]
+          },
+          {
+            "texto": "un"
+          },
+          {
+            "texto": "cuerpo",
+            "acordes": [
+              {
+                "acorde": "D7",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "formarán",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 4
+              }
+            ]
+          },
+          {
+            "texto": "",
+            "acordes": [
+              {
+                "acorde": "G7",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​"
+          },
+          {
+            "texto": ""
+          },
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​En",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "la"
+          },
+          {
+            "texto": "mesa"
+          },
+          {
+            "texto": "de"
+          },
+          {
+            "texto": "Dios",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "se"
+          },
+          {
+            "texto": "sentarán",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 4
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Como"
+          },
+          {
+            "texto": "hijos"
+          },
+          {
+            "texto": "su"
+          },
+          {
+            "texto": "pan"
+          },
+          {
+            "texto": "comulgarán",
+            "acordes": [
+              {
+                "acorde": "D7",
+                "index": 8
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Una"
+          },
+          {
+            "texto": "misma",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "esperanza",
+            "acordes": [
+              {
+                "acorde": "Cm",
+                "index": 5
+              }
+            ]
+          },
+          {
+            "texto": "caminando",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 5
+              }
+            ]
+          },
+          {
+            "texto": "contarán"
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​En"
+          },
+          {
+            "texto": "la",
+            "acordes": [
+              {
+                "acorde": "Am",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "vida"
+          },
+          {
+            "texto": "como"
+          },
+          {
+            "texto": "hermanos",
+            "acordes": [
+              {
+                "acorde": "D7",
+                "index": 4
+              }
+            ]
+          },
+          {
+            "texto": "se"
+          },
+          {
+            "texto": "amarán",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 4
+              }
+            ]
+          },
+          {
+            "texto": "",
+            "acordes": [
+              {
+                "acorde": "G7",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Una"
+          },
+          {
+            "texto": "misma",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "esperanza",
+            "acordes": [
+              {
+                "acorde": "Cm",
+                "index": 5
+              }
+            ]
+          },
+          {
+            "texto": "caminando",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 5
+              }
+            ]
+          },
+          {
+            "texto": "contarán"
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​En"
+          },
+          {
+            "texto": "la",
+            "acordes": [
+              {
+                "acorde": "Am",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "vida"
+          },
+          {
+            "texto": "como"
+          },
+          {
+            "texto": "hermanos",
+            "acordes": [
+              {
+                "acorde": "D7",
+                "index": 4
+              }
+            ]
+          },
+          {
+            "texto": "se"
+          },
+          {
+            "texto": "amarán",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 4
+              }
+            ]
+          },
+          {
+            "texto": "",
+            "acordes": [
+              {
+                "acorde": "G7",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": ""
+          }
+        ]
+      }
+    ],
+    "creadoEn": "2026-10-25T07:10:07.817Z",
+    "actualizadoEn": "2026-10-25T07:20:52.332Z"
+  },
+  {
+    "id": "1792913451345-c7ongc7",
+    "titulo": "Demos gracias al señor",
+    "categoria": "salida",
+    "lineas": [
+      {
+        "palabras": [
+          {
+            "texto": "​Demos",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "gracias"
+          },
+          {
+            "texto": "al"
+          },
+          {
+            "texto": "Señor,",
+            "acordes": [
+              {
+                "acorde": "F",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "demos"
+          },
+          {
+            "texto": "gracias;",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Demos"
+          },
+          {
+            "texto": "gracias"
+          },
+          {
+            "texto": "al",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "Señor.",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Demos",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "gracias"
+          },
+          {
+            "texto": "al"
+          },
+          {
+            "texto": "Señor,",
+            "acordes": [
+              {
+                "acorde": "F",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "demos"
+          },
+          {
+            "texto": "gracias;",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Demos"
+          },
+          {
+            "texto": "gracias"
+          },
+          {
+            "texto": "al",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "Señor.",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 2
+              }
+            ]
+          },
+          {
+            "texto": "",
+            "acordes": [
+              {
+                "acorde": "C7",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​"
+          },
+          {
+            "texto": ""
+          },
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Por"
+          },
+          {
+            "texto": "la"
+          },
+          {
+            "texto": "mañana",
+            "acordes": [
+              {
+                "acorde": "F",
+                "index": 2
+              }
+            ]
+          },
+          {
+            "texto": "las"
+          },
+          {
+            "texto": "aves"
+          },
+          {
+            "texto": "cantan",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Las"
+          },
+          {
+            "texto": "alabanzas",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 3
+              }
+            ]
+          },
+          {
+            "texto": "a"
+          },
+          {
+            "texto": "Cristo"
+          },
+          {
+            "texto": "Salvador.",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​¿Y"
+          },
+          {
+            "texto": "tú,"
+          },
+          {
+            "texto": "hermano,",
+            "acordes": [
+              {
+                "acorde": "F",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "por"
+          },
+          {
+            "texto": "qué"
+          },
+          {
+            "texto": "no"
+          },
+          {
+            "texto": "cantas",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Las"
+          },
+          {
+            "texto": "alabanzas",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 3
+              }
+            ]
+          },
+          {
+            "texto": "a"
+          },
+          {
+            "texto": "Cristo"
+          },
+          {
+            "texto": "Salvador?",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 4
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​"
+          },
+          {
+            "texto": ""
+          },
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Demos",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "gracias"
+          },
+          {
+            "texto": "al"
+          },
+          {
+            "texto": "Señor,",
+            "acordes": [
+              {
+                "acorde": "F",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "demos"
+          },
+          {
+            "texto": "gracias;",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Demos"
+          },
+          {
+            "texto": "gracias"
+          },
+          {
+            "texto": "al",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "Señor.",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Demos",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "gracias"
+          },
+          {
+            "texto": "al"
+          },
+          {
+            "texto": "Señor,",
+            "acordes": [
+              {
+                "acorde": "F",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "demos"
+          },
+          {
+            "texto": "gracias;",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Demos"
+          },
+          {
+            "texto": "gracias"
+          },
+          {
+            "texto": "al",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "Señor.",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 2
+              }
+            ]
+          },
+          {
+            "texto": "",
+            "acordes": [
+              {
+                "acorde": "C7",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​"
+          },
+          {
+            "texto": ""
+          },
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Al"
+          },
+          {
+            "texto": "mediodía",
+            "acordes": [
+              {
+                "acorde": "F",
+                "index": 5
+              }
+            ]
+          },
+          {
+            "texto": "las"
+          },
+          {
+            "texto": "flores"
+          },
+          {
+            "texto": "cantan",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​las"
+          },
+          {
+            "texto": "alabanzas",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 3
+              }
+            ]
+          },
+          {
+            "texto": "a"
+          },
+          {
+            "texto": "Cristo"
+          },
+          {
+            "texto": "Salvador",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 6
+              }
+            ]
+          },
+          {
+            "texto": "",
+            "acordes": [
+              {
+                "acorde": "C7",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​¿Y"
+          },
+          {
+            "texto": "tú,"
+          },
+          {
+            "texto": "hermano,",
+            "acordes": [
+              {
+                "acorde": "F",
+                "index": 3
+              }
+            ]
+          },
+          {
+            "texto": "por"
+          },
+          {
+            "texto": "qué"
+          },
+          {
+            "texto": "no"
+          },
+          {
+            "texto": "cantas",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​las"
+          },
+          {
+            "texto": "alabanzas",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 3
+              }
+            ]
+          },
+          {
+            "texto": "a"
+          },
+          {
+            "texto": "Cristo"
+          },
+          {
+            "texto": "Salvador?"
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​"
+          },
+          {
+            "texto": ""
+          },
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Demos",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "gracias"
+          },
+          {
+            "texto": "al"
+          },
+          {
+            "texto": "Señor,",
+            "acordes": [
+              {
+                "acorde": "F",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "demos"
+          },
+          {
+            "texto": "gracias;",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Demos"
+          },
+          {
+            "texto": "gracias"
+          },
+          {
+            "texto": "al",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "Señor.",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Demos",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "gracias"
+          },
+          {
+            "texto": "al"
+          },
+          {
+            "texto": "Señor,",
+            "acordes": [
+              {
+                "acorde": "F",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "demos"
+          },
+          {
+            "texto": "gracias;",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Demos"
+          },
+          {
+            "texto": "gracias"
+          },
+          {
+            "texto": "al",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "Señor.",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 2
+              }
+            ]
+          },
+          {
+            "texto": "",
+            "acordes": [
+              {
+                "acorde": "C7",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​"
+          },
+          {
+            "texto": ""
+          },
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Y"
+          },
+          {
+            "texto": "por"
+          },
+          {
+            "texto": "la"
+          },
+          {
+            "texto": "noche",
+            "acordes": [
+              {
+                "acorde": "F",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "la"
+          },
+          {
+            "texto": "luna"
+          },
+          {
+            "texto": "canta",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​las"
+          },
+          {
+            "texto": "alabanzas",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 3
+              }
+            ]
+          },
+          {
+            "texto": "a"
+          },
+          {
+            "texto": "Cristo"
+          },
+          {
+            "texto": "Salvador",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 5
+              }
+            ]
+          },
+          {
+            "texto": "",
+            "acordes": [
+              {
+                "acorde": "C7",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​¿Y"
+          },
+          {
+            "texto": "tú,"
+          },
+          {
+            "texto": "hermano,",
+            "acordes": [
+              {
+                "acorde": "F",
+                "index": 3
+              }
+            ]
+          },
+          {
+            "texto": "por"
+          },
+          {
+            "texto": "qué"
+          },
+          {
+            "texto": "no"
+          },
+          {
+            "texto": "cantas",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​las"
+          },
+          {
+            "texto": "alabanzas",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 3
+              }
+            ]
+          },
+          {
+            "texto": "a"
+          },
+          {
+            "texto": "Cristo"
+          },
+          {
+            "texto": "Salvador?",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 6
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Demos",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "gracias"
+          },
+          {
+            "texto": "al"
+          },
+          {
+            "texto": "Señor,",
+            "acordes": [
+              {
+                "acorde": "F",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "demos"
+          },
+          {
+            "texto": "gracias;",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Demos"
+          },
+          {
+            "texto": "gracias"
+          },
+          {
+            "texto": "al",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "Señor.",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Demos",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "gracias"
+          },
+          {
+            "texto": "al"
+          },
+          {
+            "texto": "Señor,",
+            "acordes": [
+              {
+                "acorde": "F",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "demos"
+          },
+          {
+            "texto": "gracias;",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "palabras": [
+          {
+            "texto": "​Demos"
+          },
+          {
+            "texto": "gracias"
+          },
+          {
+            "texto": "al",
+            "acordes": [
+              {
+                "acorde": "G",
+                "index": 0
+              }
+            ]
+          },
+          {
+            "texto": "Señor.",
+            "acordes": [
+              {
+                "acorde": "C",
+                "index": 2
+              }
+            ]
+          },
+          {
+            "texto": "",
+            "acordes": [
+              {
+                "acorde": "C7",
+                "index": 0
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "creadoEn": "2026-10-25T07:30:51.345Z",
+    "actualizadoEn": "2026-10-25T09:13:32.804Z"
   }
 ]

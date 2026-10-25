@@ -1,1 +1,21 @@
-[]
+[
+  {
+    "id": "1792919689777-ouu1xb5",
+    "titulo": "Misa del domingo",
+    "fecha": "2026-10-25",
+    "seleccion": {
+      "entrada": "1792726987278-9i2dr2b",
+      "senor-ten-piedad": "1792728686045-rhz807n",
+      "gloria": "1792729408357-w11ac3v",
+      "salmo": "1792731084908-gxte9lt",
+      "aleluya": "1792731473965-439pdsv",
+      "ofertorio": "1792908475395-bz7g292",
+      "santo": "1792909362904-3d9gzk5",
+      "cordero-de-dios": "1792909607999-wm8wuhs",
+      "comunion": "1792912207817-uszo6xb",
+      "salida": "1792913451345-c7ongc7"
+    },
+    "creadoEn": "2026-10-25T09:14:49.777Z",
+    "actualizadoEn": "2026-10-25T09:15:05.741Z"
+  }
+]
