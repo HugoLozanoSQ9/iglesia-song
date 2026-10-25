@@ -1,12 +1,10 @@
 "use client";
 
-import {
-  Cancion,
+import { Cancion,
   Categoria,
   CATEGORIAS_DEFAULT,
   Misa,
-  getAcordesDePalabra,
-} from "@/types/song";
+  getAcordesDePalabra, limpiarTexto } from "@/types/song";
 
 const KEY_ADMIN = "iglesia-admin-auth";
 const KEY_ADMIN_SECRET = "iglesia-admin-key";
@@ -85,7 +83,17 @@ export async function guardarCancion(cancion: Cancion): Promise<void> {
   await loadAllData();
   const todas = [...getCanciones()];
   const idx = todas.findIndex((c) => c.id === cancion.id);
-  const actualizada = { ...cancion, actualizadoEn: new Date().toISOString() };
+  const actualizada: Cancion = {
+    ...cancion,
+    titulo: limpiarTexto(cancion.titulo),
+    lineas: cancion.lineas.map((l) => ({
+      palabras: l.palabras.map((p) => ({
+        ...p,
+        texto: limpiarTexto(p.texto || ""),
+      })),
+    })),
+    actualizadoEn: new Date().toISOString(),
+  };
   if (idx >= 0) todas[idx] = actualizada;
   else todas.push(actualizada);
   cacheCanciones = todas;

@@ -1,13 +1,11 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
-import {
-  Cancion,
+import { Cancion,
   Linea,
   ACORDES_COMUNES,
   AcordePos,
-  getAcordesDePalabra,
-} from "@/types/song";
+  getAcordesDePalabra, limpiarTexto } from "@/types/song";
 
 interface SongEditorProps {
   cancion: Cancion;
@@ -35,7 +33,7 @@ function PalabraGrid({
   onSelect: () => void;
   onChangeTexto: (t: string) => void;
 }) {
-  const letters = Array.from(texto || " ");
+  const letters = Array.from(limpiarTexto(texto || "") || " ");
   const byIndex = new Map<number, string>();
   for (const a of acordes) {
     const idx = Math.max(0, Math.min(a.index, Math.max(letters.length - 1, 0)));
@@ -214,7 +212,8 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
     setAcordeInput("");
   };
 
-  const updatePalabraTexto = (lineaIdx: number, palabraIdx: number, texto: string) => {
+  const updatePalabraTexto = (lineaIdx: number, palabraIdx: number, textoRaw: string) => {
+    const texto = limpiarTexto(textoRaw);
     applyChange({
       ...cancion,
       lineas: cancion.lineas.map((linea, li) => {
@@ -448,7 +447,7 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
                         selectedWord?.palabraIdx === palabraIdx
                       }
                       onSelect={() => selectWord(lineaIdx, palabraIdx)}
-                      onChangeTexto={(t) => updatePalabraTexto(lineaIdx, palabraIdx, t)}
+                      onChangeTexto={(val) => updatePalabraTexto(lineaIdx, palabraIdx, limpiarTexto(val))}
                     />
                   ))}
                   <button

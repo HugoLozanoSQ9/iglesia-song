@@ -1,6 +1,6 @@
 "use client";
 
-import { Cancion, Palabra, getAcordesDePalabra } from "@/types/song";
+import { Cancion, Palabra, getAcordesDePalabra, limpiarTexto } from "@/types/song";
 import { cancionATexto } from "@/lib/storage";
 import { descargarCancionPDF } from "@/lib/pdf";
 
@@ -9,61 +9,42 @@ interface SongViewerProps {
   showDownload?: boolean;
 }
 
-const MONO =
-  "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace";
-
 /**
- * Misma rejilla que el editor: 1 columna = 1 letra (1ch).
- * El acorde se ancla en esa letra y puede ser multi-carácter (A7, F#m)
- * sin empujar las letras de la palabra.
+ * Fila monoespaciada: acordes arriba, letra abajo.
+ * Ancho de cada palabra = max(letras, espacio que ocupan los acordes).
  */
-function PalabraVista({ palabra }: { palabra: Palabra }) {
-  const letters = Array.from(palabra.texto || " ");
-  const byIndex = new Map<number, string>();
-  for (const a of getAcordesDePalabra(palabra)) {
-    const idx = Math.max(0, Math.min(a.index, Math.max(letters.length - 1, 0)));
-    // Si ya hay uno en el mismo índice, el último gana (no debería pasar)
-    byIndex.set(idx, a.acorde);
+function buildLine(palabras: Palabra[]) {
+  const chordParts: string[] = [];
+  const lyricParts: string[] = [];
+
+  for (const p of palabras) {
+    const texto = limpiarTexto(p.texto || "");
+    const lista = getAcordesDePalabra(p);
+
+    let width = Math.max(texto.length, 1);
+    for (const { acorde, index } of lista) {
+      const idx = Math.max(0, Math.min(index, Math.max(texto.length - 1, 0)));
+      width = Math.max(width, idx + acorde.length);
+    }
+
+    const chars = Array.from(" ".repeat(width));
+    for (const { acorde, index } of lista) {
+      const idx = Math.max(0, Math.min(index, Math.max(texto.length - 1, 0)));
+      for (let k = 0; k < acorde.length; k++) {
+        if (idx + k < chars.length) {
+          chars[idx + k] = acorde[k];
+        }
+      }
+    }
+
+    chordParts.push(chars.join(""));
+    lyricParts.push(texto.padEnd(width));
   }
 
-  return (
-    <span className="inline-flex flex-row">
-      {letters.map((ch, i) => (
-        <span
-          key={i}
-          className="inline-flex flex-col items-start"
-          style={{ width: "1ch", minWidth: "1ch" }}
-        >
-          <span className="relative block w-full h-[1.1em]">
-            {byIndex.has(i) && (
-              <span
-                className="absolute left-0 top-0 text-sky-700 font-bold whitespace-nowrap leading-none"
-                style={{ fontSize: "0.85em" }}
-              >
-                {byIndex.get(i)}
-              </span>
-            )}
-          </span>
-          <span className="leading-tight text-slate-800">
-            {ch === " " ? "\u00A0" : ch}
-          </span>
-        </span>
-      ))}
-    </span>
-  );
-}
-
-function LineaVista({ palabras }: { palabras: Palabra[] }) {
-  return (
-    <div
-      className="flex flex-wrap items-end"
-      style={{ fontFamily: MONO, fontSize: "17px", columnGap: "1ch" }}
-    >
-      {palabras.map((p, i) => (
-        <PalabraVista key={i} palabra={p} />
-      ))}
-    </div>
-  );
+  return {
+    chords: chordParts.join(" "),
+    lyrics: lyricParts.join(" "),
+  };
 }
 
 export default function SongViewer({ cancion, showDownload = true }: SongViewerProps) {
@@ -88,10 +69,27 @@ export default function SongViewer({ cancion, showDownload = true }: SongViewerP
       </div>
 
       <div className="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-sm overflow-x-auto">
-        <div className="space-y-6">
-          {cancion.lineas.map((linea, idx) => (
-            <LineaVista key={idx} palabras={linea.palabras} />
-          ))}
+        <div className="space-y-5">
+          {cancion.lineas.map((linea, idx) => {
+            const { chords, lyrics } = buildLine(linea.palabras);
+            // Saltar líneas totalmente vacías
+            if (!lyrics.trim() && !chords.trim()) return null;
+            return (
+              <pre
+                key={idx}
+                className="m-0 font-mono text-[15px] md:text-base leading-snug whitespace-pre"
+                style={{
+                  fontFamily:
+                    "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+                }}
+              >
+                <span className="block text-sky-700 font-bold text-[13px] md:text-sm min-h-[1.15em]">
+                  {chords.replace(/\s+$/, "") || "\u00A0"}
+                </span>
+                <span className="block text-slate-800">{lyrics.replace(/\s+$/, "") || "\u00A0"}</span>
+              </pre>
+            );
+          })}
         </div>
       </div>
 

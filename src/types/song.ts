@@ -19,6 +19,15 @@ export interface Palabra {
 }
 
 /** Normaliza acordes de una palabra (soporta formato viejo y nuevo) */
+
+/** Quita caracteres invisibles (ZWSP, etc.) que rompen la alineación */
+export function limpiarTexto(s: string): string {
+  if (!s) return "";
+  return s
+    .replace(/[\u200B\u200C\u200D\uFEFF]/g, "")
+    .replace(/\u00A0/g, " ");
+}
+
 export function getAcordesDePalabra(p: Palabra): AcordePos[] {
   if (p.acordes && p.acordes.length > 0) {
     return p.acordes
