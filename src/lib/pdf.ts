@@ -15,8 +15,24 @@ async function loadJsPDF() {
   }
 }
 
+/** Quita emojis y símbolos que Helvetica no puede dibujar (evita símbolos raros y letras separadas). */
+function textoPDF(s: string): string {
+  if (!s) return "";
+  return (
+    s
+      // emojis y símbolos varios
+      .replace(/[\u{1F300}-\u{1FAFF}]/gu, "")
+      .replace(/[\u{2600}-\u{27BF}]/gu, "")
+      .replace(/[\u{FE00}-\u{FE0F}]/gu, "")
+      .replace(/[\u{200D}]/gu, "")
+      // normalizar espacios
+      .replace(/\s+/g, " ")
+      .trim()
+  );
+}
+
 /**
- * Alinea el acorde sobre la letra indicada por acordeIndex (no siempre al inicio).
+ * Dibuja una canción con acordes alineados a la letra (acordeIndex).
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function drawSong(doc: any, cancion: Cancion, startY: number, pageWidth: number, margin: number): number {
@@ -27,14 +43,14 @@ function drawSong(doc: any, cancion: Cancion, startY: number, pageWidth: number,
   doc.setFont("helvetica", "bold");
   doc.setFontSize(14);
   doc.setTextColor(30, 41, 59);
-  doc.text(cancion.titulo, margin, y);
+  doc.text(textoPDF(cancion.titulo), margin, y);
   y += 8;
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
   doc.setTextColor(100, 116, 139);
   if (cancion.tonalidad) {
-    doc.text(`Tonalidad: ${cancion.tonalidad}`, margin, y);
+    doc.text(`Tonalidad: ${textoPDF(cancion.tonalidad)}`, margin, y);
     y += 6;
   }
   y += 4;
@@ -43,12 +59,10 @@ function drawSong(doc: any, cancion: Cancion, startY: number, pageWidth: number,
     doc.setFont("helvetica", "normal");
     doc.setFontSize(12);
 
-    // Ancho de cada palabra (texto completo)
     const wordWidths = linea.palabras.map((p) =>
       Math.max(doc.getTextWidth(p.texto || " "), 3)
     );
 
-    // Partir línea si no cabe
     const rows: number[][] = [[]];
     let rowW = 0;
     linea.palabras.forEach((_, i) => {
@@ -67,7 +81,7 @@ function drawSong(doc: any, cancion: Cancion, startY: number, pageWidth: number,
         y = margin;
       }
 
-      // Acordes: posición X = inicio de palabra + ancho de las letras previas al índice
+      // Acordes
       let x = margin;
       doc.setFont("helvetica", "bold");
       doc.setFontSize(9);
@@ -84,7 +98,7 @@ function drawSong(doc: any, cancion: Cancion, startY: number, pageWidth: number,
           const prefixW = prefix ? doc.getTextWidth(prefix) : 0;
           doc.setFont("helvetica", "bold");
           doc.setFontSize(9);
-          doc.text(acorde, x + prefixW, y);
+          doc.text(textoPDF(acorde), x + prefixW, y);
         }
         x += wordWidths[i] + gapWords;
       }
@@ -131,10 +145,11 @@ export async function descargarCancionPDF(cancion: Cancion) {
     doc.setPage(i);
     doc.setFontSize(8);
     doc.setTextColor(148, 163, 184);
-    doc.text(`Página ${i} de ${pageCount}`, pageWidth / 2, 290, { align: "center" });
+    doc.text(`Pagina ${i} de ${pageCount}`, pageWidth / 2, 290, { align: "center" });
   }
 
-  const nombre = cancion.titulo.replace(/[^a-zA-Z0-9áéíóúñÁÉÍÓÚÑ ]/g, "").trim() || "cancion";
+  const nombre =
+    cancion.titulo.replace(/[^a-zA-Z0-9aeiouAEIOUnN ]/gi, "").trim() || "cancion";
   doc.save(`${nombre}.pdf`);
 }
 
@@ -147,35 +162,47 @@ export async function descargarMisaPDF(misa: Misa) {
   const pageWidth = doc.internal.pageSize.getWidth();
   const categorias = getCategorias().sort((a, b) => a.orden - b.orden);
 
+  // Portada
   doc.setFillColor(14, 165, 233);
   doc.rect(0, 0, pageWidth, 40, "F");
   doc.setFont("helvetica", "bold");
   doc.setFontSize(22);
   doc.setTextColor(255, 255, 255);
-  doc.text(misa.titulo || "Librito de la Misa", pageWidth / 2, 22, { align: "center" });
+  doc.text(textoPDF(misa.titulo || "Librito de la Misa"), pageWidth / 2, 22, {
+    align: "center",
+  });
   if (misa.fecha) {
     doc.setFontSize(12);
     doc.text(misa.fecha, pageWidth / 2, 32, { align: "center" });
   }
 
+  // Orden de la misa (sin emojis)
   let y = 52;
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(11);
+  doc.setFontSize(12);
   doc.setTextColor(30, 41, 59);
   doc.text("Orden de la misa", margin, y);
-  y += 8;
+  y += 10;
 
   for (const cat of categorias) {
     const cancionId = misa.seleccion[cat.id];
     const cancion = cancionId ? getCancion(cancionId) : null;
-    doc.setFont("helvetica", "normal");
+
+    doc.setFont("helvetica", "bold");
     doc.setFontSize(10);
+    doc.setTextColor(15, 23, 42);
+    // Solo el nombre de la categoría, sin icono/emoji
+    const nombreCat = textoPDF(cat.nombre);
+    doc.text(nombreCat, margin, y);
+
+    doc.setFont("helvetica", "normal");
     doc.setTextColor(71, 85, 105);
-    doc.text(`${cat.icono || ""} ${cat.nombre}`, margin, y);
-    doc.text(cancion ? cancion.titulo : "— sin seleccionar —", margin + 55, y);
-    y += 6;
+    const tituloCancion = cancion ? textoPDF(cancion.titulo) : "- sin seleccionar -";
+    doc.text(tituloCancion, margin + 50, y);
+    y += 7;
   }
 
+  // Páginas de cada canción
   for (const cat of categorias) {
     const cancionId = misa.seleccion[cat.id];
     if (!cancionId) continue;
@@ -184,24 +211,31 @@ export async function descargarMisaPDF(misa: Misa) {
 
     doc.addPage();
     y = margin;
+
+    // Etiqueta de categoría (texto limpio, sin emoji)
     doc.setFillColor(224, 242, 254);
-    doc.roundedRect(margin, y - 4, 80, 8, 2, 2, "F");
+    doc.roundedRect(margin, y - 4, 70, 8, 2, 2, "F");
     doc.setFont("helvetica", "bold");
     doc.setFontSize(9);
     doc.setTextColor(3, 105, 161);
-    doc.text(`${cat.icono || ""} ${cat.nombre}`.trim(), margin + 3, y + 1.5);
+    doc.text(textoPDF(cat.nombre), margin + 3, y + 1.5);
     y += 12;
+
     drawSong(doc, cancion, y, pageWidth, margin);
   }
 
   const pageCount = doc.getNumberOfPages();
+  const tituloPie = textoPDF(misa.titulo || "Misa");
   for (let i = 1; i <= pageCount; i++) {
     doc.setPage(i);
     doc.setFontSize(8);
     doc.setTextColor(148, 163, 184);
-    doc.text(`${misa.titulo} · pág. ${i}/${pageCount}`, pageWidth / 2, 290, { align: "center" });
+    doc.text(`${tituloPie} · pag. ${i}/${pageCount}`, pageWidth / 2, 290, {
+      align: "center",
+    });
   }
 
-  const nombre = (misa.titulo || "misa").replace(/[^a-zA-Z0-9áéíóúñÁÉÍÓÚÑ ]/g, "").trim();
+  const nombre =
+    (misa.titulo || "misa").replace(/[^a-zA-Z0-9aeiouAEIOUnN ]/gi, "").trim() || "misa";
   doc.save(`${nombre}.pdf`);
 }
