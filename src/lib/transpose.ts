@@ -38,7 +38,7 @@ export function semitonosEntre(desde: string, hasta: string): number {
 }
 
 /**
- * Transpone un acorde: "Am", "F#m7", "Bb/D", "Gsus4"
+ * Transpone un acorde: "Am", "F#m7", "Bb/D", "Gsus4", "Am-A7"
  */
 export function transponerAcorde(
   acorde: string,
@@ -49,13 +49,24 @@ export function transponerAcorde(
   const s = acorde.trim();
   if (!s) return s;
 
+  // Compuestos con guión: Am-A7, G-D, Em-E7
+  if (s.includes("-")) {
+    const parts = s.split("-");
+    const parecenAcordes = parts.every((p) => /^[A-GH]/i.test(p.trim()));
+    if (parts.length >= 2 && parecenAcordes) {
+      return parts
+        .map((part) => transponerAcorde(part.trim(), semitonos, usarBemoles))
+        .join("-");
+    }
+  }
+
   // Bajo slash: G/B
   if (s.includes("/")) {
     const [main, bass] = s.split("/");
     return (
       transponerAcorde(main, semitonos, usarBemoles) +
       "/" +
-      transponerRaiz(bass, semitonos, usarBemoles)
+      transponerRaiz(bass.trim(), semitonos, usarBemoles)
     );
   }
 
