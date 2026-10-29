@@ -11,7 +11,7 @@ export default function HomePage() {
 
   useEffect(() => {
     loadAllData().then(() => {
-      const cats = getCategorias();
+      const cats = getCategorias().sort((a, b) => a.orden - b.orden);
       setCategorias(cats);
       const canciones = getCanciones();
       const c: Record<string, number> = {};
