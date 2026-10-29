@@ -82,8 +82,8 @@ function drawSong(doc: any, cancion: Cancion, startY: number, pageWidth: number,
       }
 
       // Acordes (omitidos si solo letra)
+      let x = margin;
       if (!soloLetra) {
-        let x = margin;
         doc.setFont("helvetica", "bold");
         doc.setFontSize(9);
         doc.setTextColor(14, 116, 144);
