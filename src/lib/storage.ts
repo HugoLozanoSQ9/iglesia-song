@@ -1,21 +1,24 @@
 "use client";
 
-import { Cancion,
+import {
+  Cancion,
   Categoria,
   CATEGORIAS_DEFAULT,
   Misa,
-  getAcordesDePalabra, limpiarTexto } from "@/types/song";
+  getAcordesDePalabra,
+  limpiarTexto,
+} from "@/types/song";
+import { getSupabase, hasSupabase } from "@/lib/supabase";
 
 const KEY_ADMIN = "iglesia-admin-auth";
 const KEY_ADMIN_SECRET = "iglesia-admin-key";
 
-// Caché en memoria (se llena desde los JSON del repo)
 let cacheCanciones: Cancion[] | null = null;
 let cacheCategorias: Categoria[] | null = null;
 let cacheMisas: Misa[] | null = null;
 let loadPromise: Promise<void> | null = null;
 
-async function fetchJson<T>(url: string, fallback: T): Promise<T> {
+async function fetchJsonFile<T>(url: string, fallback: T): Promise<T> {
   try {
     const res = await fetch(url, { cache: "no-store" });
     if (!res.ok) return fallback;
@@ -25,14 +28,51 @@ async function fetchJson<T>(url: string, fallback: T): Promise<T> {
   }
 }
 
-/** Carga canciones, categorías y misas desde public/data/*.json */
+async function loadFromSupabase(): Promise<{
+  canciones: Cancion[];
+  categorias: Categoria[];
+  misas: Misa[];
+} | null> {
+  const sb = getSupabase();
+  if (!sb) return null;
+  try {
+    const { data, error } = await sb.from("app_data").select("key, data");
+    if (error || !data) {
+      console.warn("Supabase load:", error?.message);
+      return null;
+    }
+    const map = Object.fromEntries(data.map((r) => [r.key, r.data]));
+    return {
+      canciones: (map.canciones as Cancion[]) || [],
+      categorias: (map.categorias as Categoria[]) || [],
+      misas: (map.misas as Misa[]) || [],
+    };
+  } catch (e) {
+    console.warn("Supabase load error", e);
+    return null;
+  }
+}
+
+/** Carga desde Supabase; si falla, desde public/data/*.json */
 export async function loadAllData(): Promise<void> {
   if (loadPromise) return loadPromise;
   loadPromise = (async () => {
+    if (hasSupabase()) {
+      const remote = await loadFromSupabase();
+      if (remote) {
+        cacheCanciones = remote.canciones;
+        cacheCategorias = remote.categorias?.length
+          ? remote.categorias
+          : CATEGORIAS_DEFAULT;
+        cacheMisas = remote.misas;
+        loadPromise = null;
+        return;
+      }
+    }
     const [canciones, categorias, misas] = await Promise.all([
-      fetchJson<Cancion[]>("/data/canciones.json", []),
-      fetchJson<Categoria[]>("/data/categorias.json", CATEGORIAS_DEFAULT),
-      fetchJson<Misa[]>("/data/misas.json", []),
+      fetchJsonFile<Cancion[]>("/data/canciones.json", []),
+      fetchJsonFile<Categoria[]>("/data/categorias.json", CATEGORIAS_DEFAULT),
+      fetchJsonFile<Misa[]>("/data/misas.json", []),
     ]);
     cacheCanciones = canciones;
     cacheCategorias = categorias?.length ? categorias : CATEGORIAS_DEFAULT;
@@ -42,10 +82,34 @@ export async function loadAllData(): Promise<void> {
   loadPromise = null;
 }
 
-async function persist(resource: "canciones" | "categorias" | "misas", data: unknown) {
+async function persist(
+  resource: "canciones" | "categorias" | "misas",
+  data: unknown
+): Promise<void> {
+  const sb = getSupabase();
+  if (sb) {
+    const { error } = await sb.from("app_data").upsert(
+      {
+        key: resource,
+        data,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "key" }
+    );
+    if (error) {
+      throw new Error(
+        `Supabase: ${error.message}. ¿Ejecutaste supabase/schema.sql?`
+      );
+    }
+    return;
+  }
+
+  // Fallback local: API que escribe public/data
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   const key =
-    typeof window !== "undefined" ? sessionStorage.getItem(KEY_ADMIN_SECRET) || "" : "";
+    typeof window !== "undefined"
+      ? sessionStorage.getItem(KEY_ADMIN_SECRET) || ""
+      : "";
   if (key) headers["x-admin-key"] = key;
 
   const res = await fetch(`/api/data/${resource}`, {
@@ -53,12 +117,11 @@ async function persist(resource: "canciones" | "categorias" | "misas", data: unk
     headers,
     body: JSON.stringify(data),
   });
-
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     throw new Error(
       (err as { error?: string }).error ||
-        "No se pudo guardar el archivo JSON. ¿Estás en local con npm run dev?"
+        "No se pudo guardar. Configura Supabase o usa npm run dev en local."
     );
   }
 }
@@ -176,7 +239,7 @@ export function crearMisaVacia(titulo = "Misa del domingo"): Misa {
   };
 }
 
-// ---- Admin (solo UI local; la llave se manda al guardar JSON) ----
+// ---- Admin (solo UI; no se muestra el enlace en el header público) ----
 
 export function isAdminAutenticado(): boolean {
   if (typeof window === "undefined") return false;
@@ -199,13 +262,14 @@ export function logoutAdmin(): void {
   sessionStorage.removeItem(KEY_ADMIN_SECRET);
 }
 
-// ---- Helpers ----
-
 export function generarId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 }
 
-export function crearCancionVacia(categoria: string, titulo = "Nueva canción"): Cancion {
+export function crearCancionVacia(
+  categoria: string,
+  titulo = "Nueva canción"
+): Cancion {
   return {
     id: generarId(),
     titulo,
@@ -216,7 +280,9 @@ export function crearCancionVacia(categoria: string, titulo = "Nueva canción"):
   };
 }
 
-export function textoALineas(texto: string): { palabras: { texto: string }[] }[] {
+export function textoALineas(
+  texto: string
+): { palabras: { texto: string }[] }[] {
   return texto
     .split("\n")
     .filter((l) => l.trim().length > 0)
@@ -251,8 +317,41 @@ export function cancionATexto(cancion: Cancion): string {
     });
     const lineaAcordes = cParts.join(" ").trimEnd();
     const lineaLetras = lParts.join(" ").trimEnd();
-    return lineaAcordes.trim() ? `${lineaAcordes}\n${lineaLetras}` : lineaLetras;
+    return lineaAcordes.trim()
+      ? `${lineaAcordes}\n${lineaLetras}`
+      : lineaLetras;
   });
 
   return `${cancion.titulo}\n${cancion.categoria.toUpperCase()}\n\n${lineasTexto.join("\n\n")}`;
+}
+
+/** Sube los JSON locales a Supabase (migración una vez). */
+export async function migrarJsonASupabase(): Promise<string> {
+  const sb = getSupabase();
+  if (!sb) throw new Error("Supabase no configurado");
+
+  const [canciones, categorias, misas] = await Promise.all([
+    fetchJsonFile<Cancion[]>("/data/canciones.json", []),
+    fetchJsonFile<Categoria[]>("/data/categorias.json", CATEGORIAS_DEFAULT),
+    fetchJsonFile<Misa[]>("/data/misas.json", []),
+  ]);
+
+  const rows = [
+    { key: "canciones", data: canciones, updated_at: new Date().toISOString() },
+    {
+      key: "categorias",
+      data: categorias.length ? categorias : CATEGORIAS_DEFAULT,
+      updated_at: new Date().toISOString(),
+    },
+    { key: "misas", data: misas, updated_at: new Date().toISOString() },
+  ];
+
+  const { error } = await sb.from("app_data").upsert(rows, { onConflict: "key" });
+  if (error) throw new Error(error.message);
+
+  cacheCanciones = canciones;
+  cacheCategorias = categorias.length ? categorias : CATEGORIAS_DEFAULT;
+  cacheMisas = misas;
+
+  return `Migrado: ${canciones.length} canciones, ${categorias.length} categorías, ${misas.length} misas.`;
 }

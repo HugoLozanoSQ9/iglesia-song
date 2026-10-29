@@ -48,8 +48,8 @@ function buildLine(palabras: Palabra[]) {
 }
 
 export default function SongViewer({ cancion, showDownload = true }: SongViewerProps) {
-  const handleDownloadPDF = async () => {
-    await descargarCancionPDF(cancion);
+  const handleDownloadPDF = async (soloLetra = false) => {
+    await descargarCancionPDF(cancion, { soloLetra });
   };
 
   const handleCopy = async () => {
@@ -97,15 +97,22 @@ export default function SongViewer({ cancion, showDownload = true }: SongViewerP
         <div className="mt-6 flex flex-wrap gap-3 justify-center">
           <button
             type="button"
-            onClick={handleDownloadPDF}
-            className="px-6 py-3 bg-sky-600 text-white rounded-xl font-medium hover:bg-sky-700 shadow-sm"
+            onClick={() => handleDownloadPDF(false)}
+            className="px-5 py-3 bg-sky-600 text-white rounded-xl font-medium hover:bg-sky-700 shadow-sm"
           >
-            📄 Descargar PDF
+            📄 PDF con acordes
+          </button>
+          <button
+            type="button"
+            onClick={() => handleDownloadPDF(true)}
+            className="px-5 py-3 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 shadow-sm"
+          >
+            📝 PDF solo letra
           </button>
           <button
             type="button"
             onClick={handleCopy}
-            className="px-6 py-3 bg-slate-100 text-slate-700 rounded-xl font-medium hover:bg-slate-200"
+            className="px-5 py-3 bg-slate-100 text-slate-700 rounded-xl font-medium hover:bg-slate-200"
           >
             📋 Copiar texto
           </button>

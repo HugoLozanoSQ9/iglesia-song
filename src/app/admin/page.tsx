@@ -7,7 +7,8 @@ import { isAdminAutenticado,
   getCanciones,
   getCategorias,
   eliminarCancion,
-  agregarCategoria, loadAllData } from "@/lib/storage";
+  agregarCategoria,
+  migrarJsonASupabase, loadAllData } from "@/lib/storage";
 import { Cancion, Categoria } from "@/types/song";
 
 export default function AdminPage() {
@@ -42,6 +43,18 @@ export default function AdminPage() {
     }
   };
 
+  
+  const handleMigrarSupabase = async () => {
+    if (!confirm("¿Subir canciones/categorías/misas del JSON local a Supabase?")) return;
+    try {
+      const msg = await migrarJsonASupabase();
+      alert(msg);
+      await cargar();
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "Error al migrar");
+    }
+  };
+
   const handleAddCategoria = async () => {
     if (!nuevaCat.trim()) return;
     try {
@@ -55,6 +68,14 @@ export default function AdminPage() {
   };
 
   return (
+    // admin
+
+    <div className="max-w-6xl mx-auto px-4 pt-4">
+      <button type="button" onClick={handleMigrarSupabase}
+        className="mb-4 px-4 py-2 bg-emerald-600 text-white rounded-xl text-sm font-medium hover:bg-emerald-700">
+        Subir datos a Supabase
+      </button>
+    </div>
     <div className="max-w-5xl mx-auto px-4 py-8">
       <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
         <h1 className="text-3xl font-bold text-slate-800">Panel de Administración</h1>

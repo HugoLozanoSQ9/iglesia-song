@@ -41,18 +41,24 @@ export default function MisasPage() {
             Arma el orden del día: una canción por cada parte de la misa
           </p>
         </div>
-        <Link
-          href="/misa/nueva"
-          className="px-5 py-3 bg-sky-600 text-white rounded-xl font-medium hover:bg-sky-700 shadow-sm"
-        >
-          + Nuevo librito
-        </Link>
+        {isAdmin && (
+          <Link
+            href="/misa/nueva"
+            className="px-5 py-3 bg-sky-600 text-white rounded-xl font-medium hover:bg-sky-700 shadow-sm"
+          >
+            + Nuevo librito
+          </Link>
+        )}
       </div>
 
       {misas.length === 0 ? (
         <div className="bg-white rounded-2xl border border-slate-200 p-10 text-center text-slate-500">
           <p className="text-xl mb-2">Aún no hay libritos</p>
-          <p className="text-sm">Crea uno para preparar las canciones del domingo.</p>
+          <p className="text-sm">
+            {isAdmin
+              ? "Crea uno para preparar las canciones del domingo."
+              : "Cuando el administrador publique un librito, aparecerá aquí."}
+          </p>
         </div>
       ) : (
         <ul className="space-y-3">
@@ -82,20 +88,22 @@ export default function MisasPage() {
                   >
                     Ver
                   </Link>
-                  <Link
-                    href={`/misa/editar/${m.id}`}
-                    className="px-3 py-1.5 text-sm bg-amber-100 text-amber-800 rounded-lg hover:bg-amber-200"
-                  >
-                    Editar
-                  </Link>
                   {isAdmin && (
-                    <button
-                      type="button"
-                      onClick={() => handleEliminar(m.id, m.titulo)}
-                      className="px-3 py-1.5 text-sm bg-red-100 text-red-700 rounded-lg hover:bg-red-200"
-                    >
-                      Eliminar
-                    </button>
+                    <>
+                      <Link
+                        href={`/misa/editar/${m.id}`}
+                        className="px-3 py-1.5 text-sm bg-amber-100 text-amber-800 rounded-lg hover:bg-amber-200"
+                      >
+                        Editar
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => handleEliminar(m.id, m.titulo)}
+                        className="px-3 py-1.5 text-sm bg-red-100 text-red-700 rounded-lg hover:bg-red-200"
+                      >
+                        Eliminar
+                      </button>
+                    </>
                   )}
                 </div>
               </li>

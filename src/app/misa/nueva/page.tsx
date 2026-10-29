@@ -6,7 +6,7 @@ import Link from "next/link";
 import { getCategorias,
   getCancionesPorCategoria,
   crearMisaVacia,
-  guardarMisa, loadAllData } from "@/lib/storage";
+  guardarMisa, loadAllData, isAdminAutenticado } from "@/lib/storage";
 import { Cancion, Categoria, Misa } from "@/types/song";
 
 export default function NuevaMisaPage() {
@@ -16,6 +16,10 @@ export default function NuevaMisaPage() {
   const [cancionesPorCat, setCancionesPorCat] = useState<Record<string, Cancion[]>>({});
 
   useEffect(() => {
+    if (!isAdminAutenticado()) {
+      router.replace("/admin/login");
+      return;
+    }
     loadAllData().then(() => {
     const cats = getCategorias().sort((a, b) => a.orden - b.orden);
     setCategorias(cats);

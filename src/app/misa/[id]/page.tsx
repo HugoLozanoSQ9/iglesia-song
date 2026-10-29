@@ -46,8 +46,8 @@ function MisaContent() {
     );
   }
 
-  const handlePDF = async () => {
-    await descargarMisaPDF(misa);
+  const handlePDF = async (soloLetra = false) => {
+    await descargarMisaPDF(misa, { soloLetra });
   };
 
   const cancionActual = cancionActiva ? canciones[cancionActiva] : null;
@@ -67,10 +67,17 @@ function MisaContent() {
           </Link>
           <button
             type="button"
-            onClick={handlePDF}
-            className="px-4 py-2 bg-sky-600 text-white rounded-lg text-sm font-medium hover:bg-sky-700"
+            onClick={() => handlePDF(false)}
+            className="px-5 py-2.5 bg-sky-600 text-white rounded-xl font-medium hover:bg-sky-700"
           >
-            📄 Descargar PDF
+            📄 PDF con acordes
+          </button>
+          <button
+            type="button"
+            onClick={() => handlePDF(true)}
+            className="px-5 py-2.5 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700"
+          >
+            📝 PDF solo letra
           </button>
         </div>
       </div>

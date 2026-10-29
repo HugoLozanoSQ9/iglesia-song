@@ -12,7 +12,8 @@
     "jspdf": "^3.0.1",
     "next": "16.4.2",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "@supabase/supabase-js": "^2.49.1"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",

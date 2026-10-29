@@ -6,7 +6,7 @@ import Link from "next/link";
 import { getCategorias,
   getCancionesPorCategoria,
   getMisa,
-  guardarMisa, loadAllData } from "@/lib/storage";
+  guardarMisa, loadAllData, isAdminAutenticado } from "@/lib/storage";
 import { Cancion, Categoria, Misa } from "@/types/song";
 
 function EditarMisaContent() {
@@ -19,6 +19,10 @@ function EditarMisaContent() {
   const [cancionesPorCat, setCancionesPorCat] = useState<Record<string, Cancion[]>>({});
 
   useEffect(() => {
+    if (!isAdminAutenticado()) {
+      router.replace("/admin/login");
+      return;
+    }
     loadAllData().then(() => {
     const m = getMisa(id);
     if (!m) {

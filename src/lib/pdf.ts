@@ -35,7 +35,7 @@ function textoPDF(s: string): string {
  * Dibuja una canción con acordes alineados a la letra (acordeIndex).
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function drawSong(doc: any, cancion: Cancion, startY: number, pageWidth: number, margin: number): number {
+function drawSong(doc: any, cancion: Cancion, startY: number, pageWidth: number, margin: number, soloLetra = false): number {
   let y = startY;
   const gapWords = 2.2;
   const usableWidth = pageWidth - margin * 2;
@@ -81,28 +81,30 @@ function drawSong(doc: any, cancion: Cancion, startY: number, pageWidth: number,
         y = margin;
       }
 
-      // Acordes
-      let x = margin;
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(9);
-      doc.setTextColor(14, 116, 144);
+      // Acordes (omitidos si solo letra)
+      if (!soloLetra) {
+        let x = margin;
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(9);
+        doc.setTextColor(14, 116, 144);
 
-      for (const i of indices) {
-        const p = linea.palabras[i];
-        const texto = p.texto || "";
-        for (const { acorde, index } of getAcordesDePalabra(p)) {
-          const idx = Math.max(0, Math.min(index, Math.max(texto.length - 1, 0)));
-          doc.setFont("helvetica", "normal");
-          doc.setFontSize(12);
-          const prefix = texto.slice(0, idx);
-          const prefixW = prefix ? doc.getTextWidth(prefix) : 0;
-          doc.setFont("helvetica", "bold");
-          doc.setFontSize(9);
-          doc.text(textoPDF(acorde), x + prefixW, y);
+        for (const i of indices) {
+          const p = linea.palabras[i];
+          const texto = p.texto || "";
+          for (const { acorde, index } of getAcordesDePalabra(p)) {
+            const idx = Math.max(0, Math.min(index, Math.max(texto.length - 1, 0)));
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(12);
+            const prefix = texto.slice(0, idx);
+            const prefixW = prefix ? doc.getTextWidth(prefix) : 0;
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(9);
+            doc.text(textoPDF(acorde), x + prefixW, y);
+          }
+          x += wordWidths[i] + gapWords;
         }
-        x += wordWidths[i] + gapWords;
+        y += 5;
       }
-      y += 5;
 
       // Letra
       x = margin;
@@ -123,7 +125,7 @@ function drawSong(doc: any, cancion: Cancion, startY: number, pageWidth: number,
   return y + 4;
 }
 
-export async function descargarCancionPDF(cancion: Cancion) {
+export async function descargarCancionPDF(cancion: Cancion, opts?: { soloLetra?: boolean }) {
   const jsPDF = await loadJsPDF();
   if (!jsPDF) return;
 
@@ -138,7 +140,7 @@ export async function descargarCancionPDF(cancion: Cancion) {
   doc.setTextColor(255, 255, 255);
   doc.text("Cancionero Parroquial", margin, 8);
 
-  drawSong(doc, cancion, 24, pageWidth, margin);
+  drawSong(doc, cancion, 24, pageWidth, margin, opts?.soloLetra === true);
 
   const pageCount = doc.getNumberOfPages();
   for (let i = 1; i <= pageCount; i++) {
@@ -148,12 +150,13 @@ export async function descargarCancionPDF(cancion: Cancion) {
     doc.text(`Pagina ${i} de ${pageCount}`, pageWidth / 2, 290, { align: "center" });
   }
 
-  const nombre =
+  const base =
     cancion.titulo.replace(/[^a-zA-Z0-9aeiouAEIOUnN ]/gi, "").trim() || "cancion";
-  doc.save(`${nombre}.pdf`);
+  const sufijo = opts?.soloLetra ? "-letra" : "-acordes";
+  doc.save(`${base}${sufijo}.pdf`);
 }
 
-export async function descargarMisaPDF(misa: Misa) {
+export async function descargarMisaPDF(misa: Misa, opts?: { soloLetra?: boolean }) {
   const jsPDF = await loadJsPDF();
   if (!jsPDF) return;
 
@@ -221,7 +224,7 @@ export async function descargarMisaPDF(misa: Misa) {
     doc.text(textoPDF(cat.nombre), margin + 3, y + 1.5);
     y += 12;
 
-    drawSong(doc, cancion, y, pageWidth, margin);
+    drawSong(doc, cancion, y, pageWidth, margin, opts?.soloLetra === true);
   }
 
   const pageCount = doc.getNumberOfPages();
@@ -235,7 +238,8 @@ export async function descargarMisaPDF(misa: Misa) {
     });
   }
 
-  const nombre =
+  const base =
     (misa.titulo || "misa").replace(/[^a-zA-Z0-9aeiouAEIOUnN ]/gi, "").trim() || "misa";
-  doc.save(`${nombre}.pdf`);
+  const sufijo = opts?.soloLetra ? "-letra" : "-acordes";
+  doc.save(`${base}${sufijo}.pdf`);
 }
