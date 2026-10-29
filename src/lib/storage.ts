@@ -8,7 +8,7 @@ import {
   getAcordesDePalabra,
   limpiarTexto,
 } from "@/types/song";
-import { getSupabase, hasSupabase } from "@/lib/supabase";
+import { getSupabase, hasSupabase, isServerlessHost } from "@/lib/supabase";
 
 const KEY_ADMIN = "iglesia-admin-auth";
 const KEY_ADMIN_SECRET = "iglesia-admin-key";
@@ -232,7 +232,9 @@ export async function guardarCategorias(cats: Categoria[]): Promise<void> {
       icono: c.icono || "🎵",
     }));
     const { error } = await sb.from("categorias").upsert(rows, { onConflict: "id" });
-    if (error) throw new Error(error.message);
+    if (error) {
+      throw new Error(`Supabase categorías: ${error.message}`);
+    }
   } else {
     await persistLocal("categorias", cats);
   }
@@ -322,6 +324,15 @@ async function persistLocal(
   resource: "canciones" | "categorias" | "misas",
   data: unknown
 ): Promise<void> {
+  if (isServerlessHost() || hasSupabase()) {
+    throw new Error(
+      "En producción debes usar Supabase. Configura en Vercel:
+" +
+        "NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY
+" +
+        "Luego Redeploy."
+    );
+  }
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   const key =
     typeof window !== "undefined"

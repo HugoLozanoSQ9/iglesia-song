@@ -88,6 +88,7 @@ export const CATEGORIAS_DEFAULT: Categoria[] = [
   { id: "cordero-de-dios", nombre: "Cordero de Dios", orden: 8, icono: "🐑" },
   { id: "comunion", nombre: "Comunión", orden: 9, icono: "🍷" },
   { id: "salida", nombre: "Salida", orden: 10, icono: "🚶" },
+  { id: "padre-nuestro", nombre: "Padre Nuestro", orden: 11, icono: "🙌" },
 ];
 
 export const ACORDES_COMUNES = [

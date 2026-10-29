@@ -58,5 +58,11 @@
     "nombre": "Salida",
     "orden": 10,
     "icono": "🚶"
+  },
+  {
+    "id": "padre-nuestro",
+    "nombre": "Padre Nuestro",
+    "orden": 11,
+    "icono": "🎵"
   }
 ]
