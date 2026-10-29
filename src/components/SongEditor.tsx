@@ -6,6 +6,7 @@ import { Cancion,
   ACORDES_COMUNES,
   AcordePos,
   getAcordesDePalabra, limpiarTexto } from "@/types/song";
+import { TONALIDADES, transponerCancion, debeUsarBemoles } from "@/lib/transpose";
 
 interface SongEditorProps {
   cancion: Cancion;
@@ -406,6 +407,56 @@ export default function SongEditor({ cancion, onChange, onSave }: SongEditorProp
           className="text-2xl md:text-3xl font-bold px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-sky-500 focus:outline-none bg-white shadow-sm text-slate-900"
           placeholder="Título..."
         />
+      </div>
+
+      {/* Tonalidad por defecto (se guarda en BD) */}
+      <div className="flex flex-wrap items-center gap-3 bg-violet-50 border border-violet-200 rounded-xl px-4 py-3">
+        <label className="text-sm font-medium text-violet-800">Tonalidad base</label>
+        <select
+          value={cancion.tonalidad || ""}
+          onChange={(e) =>
+            applyChange({ ...cancion, tonalidad: e.target.value || undefined })
+          }
+          className="px-3 py-2 rounded-lg border border-violet-300 bg-white text-slate-800 font-mono font-semibold"
+        >
+          <option value="">Sin definir</option>
+          {TONALIDADES.map((t) => (
+            <option key={t} value={t}>
+              {t}
+            </option>
+          ))}
+        </select>
+        <span className="text-xs text-violet-600 hidden sm:inline">
+          Transponer toda la canción (cambia acordes y tonalidad base):
+        </span>
+        <button
+          type="button"
+          onClick={() => {
+            const next = transponerCancion(cancion, -1, {
+              actualizarTonalidad: true,
+              usarBemoles: debeUsarBemoles(cancion.tonalidad),
+            });
+            applyChange(next);
+          }}
+          className="px-3 py-2 rounded-lg bg-white border border-violet-300 text-violet-800 font-bold hover:bg-violet-100"
+          title="Bajar 1 semitono (guarda al guardar la canción)"
+        >
+          −1
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            const next = transponerCancion(cancion, 1, {
+              actualizarTonalidad: true,
+              usarBemoles: debeUsarBemoles(cancion.tonalidad),
+            });
+            applyChange(next);
+          }}
+          className="px-3 py-2 rounded-lg bg-white border border-violet-300 text-violet-800 font-bold hover:bg-violet-100"
+          title="Subir 1 semitono (guarda al guardar la canción)"
+        >
+          +1
+        </button>
       </div>
 
       <div
