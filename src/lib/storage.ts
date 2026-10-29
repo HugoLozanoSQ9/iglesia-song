@@ -18,6 +18,70 @@ let cacheCategorias: Categoria[] | null = null;
 let cacheMisas: Misa[] | null = null;
 let loadPromise: Promise<void> | null = null;
 
+// ---- Mapeo filas DB ↔ app ----
+
+function rowToCancion(row: Record<string, unknown>): Cancion {
+  return {
+    id: String(row.id),
+    titulo: String(row.titulo || ""),
+    categoria: String(row.categoria || ""),
+    lineas: (row.lineas as Cancion["lineas"]) || [],
+    tonalidad: (row.tonalidad as string) || undefined,
+    autor: (row.autor as string) || undefined,
+    creadoEn: String(row.creado_en || row.creadoEn || new Date().toISOString()),
+    actualizadoEn: String(row.actualizado_en || row.actualizadoEn || new Date().toISOString()),
+  };
+}
+
+function cancionToRow(c: Cancion) {
+  return {
+    id: c.id,
+    titulo: limpiarTexto(c.titulo),
+    categoria: c.categoria,
+    lineas: c.lineas.map((l) => ({
+      palabras: l.palabras.map((p) => ({
+        ...p,
+        texto: limpiarTexto(p.texto || ""),
+      })),
+    })),
+    tonalidad: c.tonalidad || null,
+    autor: c.autor || null,
+    creado_en: c.creadoEn || new Date().toISOString(),
+    actualizado_en: new Date().toISOString(),
+  };
+}
+
+function rowToCategoria(row: Record<string, unknown>): Categoria {
+  return {
+    id: String(row.id),
+    nombre: String(row.nombre || ""),
+    orden: Number(row.orden ?? 0),
+    icono: (row.icono as string) || "🎵",
+  };
+}
+
+function rowToMisa(row: Record<string, unknown>): Misa {
+  return {
+    id: String(row.id),
+    titulo: String(row.titulo || ""),
+    fecha: (row.fecha as string) || undefined,
+    seleccion: (row.seleccion as Record<string, string>) || {},
+    creadoEn: String(row.creado_en || new Date().toISOString()),
+    actualizadoEn: String(row.actualizado_en || new Date().toISOString()),
+  };
+}
+
+function misaToRow(m: Misa) {
+  return {
+    id: m.id,
+    titulo: m.titulo,
+    fecha: m.fecha || null,
+    seleccion: m.seleccion || {},
+    creado_en: m.creadoEn || new Date().toISOString(),
+    actualizado_en: new Date().toISOString(),
+  };
+}
+
 async function fetchJsonFile<T>(url: string, fallback: T): Promise<T> {
   try {
     const res = await fetch(url, { cache: "no-store" });
@@ -28,47 +92,49 @@ async function fetchJsonFile<T>(url: string, fallback: T): Promise<T> {
   }
 }
 
-async function loadFromSupabase(): Promise<{
-  canciones: Cancion[];
-  categorias: Categoria[];
-  misas: Misa[];
-} | null> {
-  const sb = getSupabase();
-  if (!sb) return null;
-  try {
-    const { data, error } = await sb.from("app_data").select("key, data");
-    if (error || !data) {
-      console.warn("Supabase load:", error?.message);
-      return null;
-    }
-    const map = Object.fromEntries(data.map((r) => [r.key, r.data]));
-    return {
-      canciones: (map.canciones as Cancion[]) || [],
-      categorias: (map.categorias as Categoria[]) || [],
-      misas: (map.misas as Misa[]) || [],
-    };
-  } catch (e) {
-    console.warn("Supabase load error", e);
-    return null;
-  }
-}
-
-/** Carga desde Supabase; si falla, desde public/data/*.json */
+/** Carga desde tablas normalizadas de Supabase; si falla, JSON local. */
 export async function loadAllData(): Promise<void> {
   if (loadPromise) return loadPromise;
   loadPromise = (async () => {
-    if (hasSupabase()) {
-      const remote = await loadFromSupabase();
-      if (remote) {
-        cacheCanciones = remote.canciones;
-        cacheCategorias = remote.categorias?.length
-          ? remote.categorias
-          : CATEGORIAS_DEFAULT;
-        cacheMisas = remote.misas;
-        loadPromise = null;
-        return;
+    const sb = getSupabase();
+    if (sb && hasSupabase()) {
+      try {
+        const [catRes, canRes, misRes] = await Promise.all([
+          sb.from("categorias").select("*").order("orden", { ascending: true }),
+          sb.from("canciones").select("*").order("titulo", { ascending: true }),
+          sb.from("misas").select("*").order("fecha", { ascending: false }),
+        ]);
+
+        // Si las tablas v2 no existen, intenta esquema viejo app_data
+        if (catRes.error || canRes.error) {
+          const legacy = await sb.from("app_data").select("key, data");
+          if (!legacy.error && legacy.data?.length) {
+            const map = Object.fromEntries(legacy.data.map((r) => [r.key, r.data]));
+            cacheCanciones = (map.canciones as Cancion[]) || [];
+            cacheCategorias =
+              ((map.categorias as Categoria[]) || []).length > 0
+                ? (map.categorias as Categoria[])
+                : CATEGORIAS_DEFAULT;
+            cacheMisas = (map.misas as Misa[]) || [];
+            loadPromise = null;
+            return;
+          }
+          console.warn("Supabase:", catRes.error?.message || canRes.error?.message);
+        } else {
+          cacheCategorias =
+            (catRes.data || []).map(rowToCategoria).length > 0
+              ? (catRes.data || []).map(rowToCategoria)
+              : CATEGORIAS_DEFAULT;
+          cacheCanciones = (canRes.data || []).map(rowToCancion);
+          cacheMisas = (misRes.data || []).map(rowToMisa);
+          loadPromise = null;
+          return;
+        }
+      } catch (e) {
+        console.warn("Supabase load error", e);
       }
     }
+
     const [canciones, categorias, misas] = await Promise.all([
       fetchJsonFile<Cancion[]>("/data/canciones.json", []),
       fetchJsonFile<Categoria[]>("/data/categorias.json", CATEGORIAS_DEFAULT),
@@ -80,50 +146,6 @@ export async function loadAllData(): Promise<void> {
   })();
   await loadPromise;
   loadPromise = null;
-}
-
-async function persist(
-  resource: "canciones" | "categorias" | "misas",
-  data: unknown
-): Promise<void> {
-  const sb = getSupabase();
-  if (sb) {
-    const { error } = await sb.from("app_data").upsert(
-      {
-        key: resource,
-        data,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "key" }
-    );
-    if (error) {
-      throw new Error(
-        `Supabase: ${error.message}. ¿Ejecutaste supabase/schema.sql?`
-      );
-    }
-    return;
-  }
-
-  // Fallback local: API que escribe public/data
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
-  const key =
-    typeof window !== "undefined"
-      ? sessionStorage.getItem(KEY_ADMIN_SECRET) || ""
-      : "";
-  if (key) headers["x-admin-key"] = key;
-
-  const res = await fetch(`/api/data/${resource}`, {
-    method: "PUT",
-    headers,
-    body: JSON.stringify(data),
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(
-      (err as { error?: string }).error ||
-        "No se pudo guardar. Configura Supabase o usa npm run dev en local."
-    );
-  }
 }
 
 // ---- Canciones ----
@@ -144,8 +166,6 @@ export function getCancion(id: string): Cancion | null {
 
 export async function guardarCancion(cancion: Cancion): Promise<void> {
   await loadAllData();
-  const todas = [...getCanciones()];
-  const idx = todas.findIndex((c) => c.id === cancion.id);
   const actualizada: Cancion = {
     ...cancion,
     titulo: limpiarTexto(cancion.titulo),
@@ -157,17 +177,43 @@ export async function guardarCancion(cancion: Cancion): Promise<void> {
     })),
     actualizadoEn: new Date().toISOString(),
   };
+
+  const sb = getSupabase();
+  if (sb && hasSupabase()) {
+    const { error } = await sb.from("canciones").upsert(cancionToRow(actualizada), {
+      onConflict: "id",
+    });
+    if (error) throw new Error(`Supabase canciones: ${error.message}`);
+  } else {
+    await persistLocal("canciones", (() => {
+      const todas = [...getCanciones()];
+      const idx = todas.findIndex((c) => c.id === actualizada.id);
+      if (idx >= 0) todas[idx] = actualizada;
+      else todas.push(actualizada);
+      return todas;
+    })());
+  }
+
+  const todas = [...getCanciones()];
+  const idx = todas.findIndex((c) => c.id === actualizada.id);
   if (idx >= 0) todas[idx] = actualizada;
   else todas.push(actualizada);
   cacheCanciones = todas;
-  await persist("canciones", todas);
 }
 
 export async function eliminarCancion(id: string): Promise<void> {
   await loadAllData();
-  const filtradas = getCanciones().filter((c) => c.id !== id);
-  cacheCanciones = filtradas;
-  await persist("canciones", filtradas);
+  const sb = getSupabase();
+  if (sb && hasSupabase()) {
+    const { error } = await sb.from("canciones").delete().eq("id", id);
+    if (error) throw new Error(error.message);
+  } else {
+    await persistLocal(
+      "canciones",
+      getCanciones().filter((c) => c.id !== id)
+    );
+  }
+  cacheCanciones = getCanciones().filter((c) => c.id !== id);
 }
 
 // ---- Categorías ----
@@ -177,8 +223,20 @@ export function getCategorias(): Categoria[] {
 }
 
 export async function guardarCategorias(cats: Categoria[]): Promise<void> {
+  const sb = getSupabase();
+  if (sb && hasSupabase()) {
+    const rows = cats.map((c) => ({
+      id: c.id,
+      nombre: c.nombre,
+      orden: c.orden,
+      icono: c.icono || "🎵",
+    }));
+    const { error } = await sb.from("categorias").upsert(rows, { onConflict: "id" });
+    if (error) throw new Error(error.message);
+  } else {
+    await persistLocal("categorias", cats);
+  }
   cacheCategorias = cats;
-  await persist("categorias", cats);
 }
 
 export async function agregarCategoria(nombre: string): Promise<Categoria> {
@@ -195,8 +253,7 @@ export async function agregarCategoria(nombre: string): Promise<Categoria> {
     orden: actuales.length + 1,
     icono: "🎵",
   };
-  const actualizadas = [...actuales, nueva];
-  await guardarCategorias(actualizadas);
+  await guardarCategorias([...actuales, nueva]);
   return nueva;
 }
 
@@ -212,20 +269,40 @@ export function getMisa(id: string): Misa | null {
 
 export async function guardarMisa(misa: Misa): Promise<void> {
   await loadAllData();
-  const todas = [...getMisas()];
-  const idx = todas.findIndex((m) => m.id === misa.id);
   const actualizada = { ...misa, actualizadoEn: new Date().toISOString() };
+  const sb = getSupabase();
+  if (sb && hasSupabase()) {
+    const { error } = await sb.from("misas").upsert(misaToRow(actualizada), {
+      onConflict: "id",
+    });
+    if (error) throw new Error(error.message);
+  } else {
+    const todas = [...getMisas()];
+    const idx = todas.findIndex((m) => m.id === actualizada.id);
+    if (idx >= 0) todas[idx] = actualizada;
+    else todas.push(actualizada);
+    await persistLocal("misas", todas);
+  }
+  const todas = [...getMisas()];
+  const idx = todas.findIndex((m) => m.id === actualizada.id);
   if (idx >= 0) todas[idx] = actualizada;
   else todas.push(actualizada);
   cacheMisas = todas;
-  await persist("misas", todas);
 }
 
 export async function eliminarMisa(id: string): Promise<void> {
   await loadAllData();
-  const filtradas = getMisas().filter((m) => m.id !== id);
-  cacheMisas = filtradas;
-  await persist("misas", filtradas);
+  const sb = getSupabase();
+  if (sb && hasSupabase()) {
+    const { error } = await sb.from("misas").delete().eq("id", id);
+    if (error) throw new Error(error.message);
+  } else {
+    await persistLocal(
+      "misas",
+      getMisas().filter((m) => m.id !== id)
+    );
+  }
+  cacheMisas = getMisas().filter((m) => m.id !== id);
 }
 
 export function crearMisaVacia(titulo = "Misa del domingo"): Misa {
@@ -239,7 +316,30 @@ export function crearMisaVacia(titulo = "Misa del domingo"): Misa {
   };
 }
 
-// ---- Admin (solo UI; no se muestra el enlace en el header público) ----
+// ---- Fallback local (public/data) ----
+
+async function persistLocal(
+  resource: "canciones" | "categorias" | "misas",
+  data: unknown
+): Promise<void> {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  const key =
+    typeof window !== "undefined"
+      ? sessionStorage.getItem(KEY_ADMIN_SECRET) || ""
+      : "";
+  if (key) headers["x-admin-key"] = key;
+  const res = await fetch(`/api/data/${resource}`, {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as { error?: string }).error || "Error al guardar local");
+  }
+}
+
+// ---- Admin ----
 
 export function isAdminAutenticado(): boolean {
   if (typeof window === "undefined") return false;
@@ -321,37 +421,62 @@ export function cancionATexto(cancion: Cancion): string {
       ? `${lineaAcordes}\n${lineaLetras}`
       : lineaLetras;
   });
-
   return `${cancion.titulo}\n${cancion.categoria.toUpperCase()}\n\n${lineasTexto.join("\n\n")}`;
 }
 
-/** Sube los JSON locales a Supabase (migración una vez). */
+/**
+ * Migra JSON local (o datos viejos de app_data) a tablas normalizadas.
+ */
 export async function migrarJsonASupabase(): Promise<string> {
   const sb = getSupabase();
   if (!sb) throw new Error("Supabase no configurado");
 
-  const [canciones, categorias, misas] = await Promise.all([
-    fetchJsonFile<Cancion[]>("/data/canciones.json", []),
-    fetchJsonFile<Categoria[]>("/data/categorias.json", CATEGORIAS_DEFAULT),
-    fetchJsonFile<Misa[]>("/data/misas.json", []),
-  ]);
+  let canciones = await fetchJsonFile<Cancion[]>("/data/canciones.json", []);
+  let categorias = await fetchJsonFile<Categoria[]>(
+    "/data/categorias.json",
+    CATEGORIAS_DEFAULT
+  );
+  let misas = await fetchJsonFile<Misa[]>("/data/misas.json", []);
 
-  const rows = [
-    { key: "canciones", data: canciones, updated_at: new Date().toISOString() },
-    {
-      key: "categorias",
-      data: categorias.length ? categorias : CATEGORIAS_DEFAULT,
-      updated_at: new Date().toISOString(),
-    },
-    { key: "misas", data: misas, updated_at: new Date().toISOString() },
-  ];
+  // Si hay datos en app_data viejo, úsalos
+  const legacy = await sb.from("app_data").select("key, data");
+  if (!legacy.error && legacy.data?.length) {
+    const map = Object.fromEntries(legacy.data.map((r) => [r.key, r.data]));
+    if (Array.isArray(map.canciones) && map.canciones.length) {
+      canciones = map.canciones as Cancion[];
+    }
+    if (Array.isArray(map.categorias) && map.categorias.length) {
+      categorias = map.categorias as Categoria[];
+    }
+    if (Array.isArray(map.misas) && map.misas.length) {
+      misas = map.misas as Misa[];
+    }
+  }
 
-  const { error } = await sb.from("app_data").upsert(rows, { onConflict: "key" });
-  if (error) throw new Error(error.message);
+  if (!categorias.length) categorias = CATEGORIAS_DEFAULT;
+
+  const catRows = categorias.map((c) => ({
+    id: c.id,
+    nombre: c.nombre,
+    orden: c.orden,
+    icono: c.icono || "🎵",
+  }));
+  const { error: e1 } = await sb.from("categorias").upsert(catRows, { onConflict: "id" });
+  if (e1) throw new Error(`categorias: ${e1.message}. ¿Ejecutaste schema-v2.sql?`);
+
+  const canRows = canciones.map(cancionToRow);
+  const { error: e2 } = await sb.from("canciones").upsert(canRows, { onConflict: "id" });
+  if (e2) throw new Error(`canciones: ${e2.message}`);
+
+  if (misas.length) {
+    const misRows = misas.map(misaToRow);
+    const { error: e3 } = await sb.from("misas").upsert(misRows, { onConflict: "id" });
+    if (e3) throw new Error(`misas: ${e3.message}`);
+  }
 
   cacheCanciones = canciones;
-  cacheCategorias = categorias.length ? categorias : CATEGORIAS_DEFAULT;
+  cacheCategorias = categorias;
   cacheMisas = misas;
 
-  return `Migrado: ${canciones.length} canciones, ${categorias.length} categorías, ${misas.length} misas.`;
+  return `Migrado a tablas: ${canciones.length} canciones, ${categorias.length} categorías, ${misas.length} misas.`;
 }

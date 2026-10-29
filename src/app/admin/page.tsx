@@ -68,23 +68,24 @@ export default function AdminPage() {
   };
 
   return (
-    // admin
-
-    <div className="max-w-6xl mx-auto px-4 pt-4">
-      <button type="button" onClick={handleMigrarSupabase}
-        className="mb-4 px-4 py-2 bg-emerald-600 text-white rounded-xl text-sm font-medium hover:bg-emerald-700">
-        Subir datos a Supabase
-      </button>
-    </div>
     <div className="max-w-5xl mx-auto px-4 py-8">
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <h1 className="text-3xl font-bold text-slate-800">Panel de Administración</h1>
-        <Link
-          href="/admin/nueva"
-          className="px-5 py-3 bg-sky-600 text-white rounded-xl font-medium hover:bg-sky-700 shadow-sm"
-        >
-          + Nueva canción
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={handleMigrarSupabase}
+            className="px-4 py-2 bg-emerald-600 text-white rounded-xl text-sm font-medium hover:bg-emerald-700"
+          >
+            Migrar a Supabase
+          </button>
+          <Link
+            href="/admin/nueva"
+            className="px-5 py-3 bg-sky-600 text-white rounded-xl font-medium hover:bg-sky-700 shadow-sm"
+          >
+            + Nueva canción
+          </Link>
+        </div>
       </div>
 
       {/* Categorías */}
