@@ -326,11 +326,7 @@ async function persistLocal(
 ): Promise<void> {
   if (isServerlessHost() || hasSupabase()) {
     throw new Error(
-      "En producción debes usar Supabase. Configura en Vercel:
-" +
-        "NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY
-" +
-        "Luego Redeploy."
+      "En produccion debes usar Supabase. Configura en Vercel: NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY. Luego Redeploy."
     );
   }
   const headers: Record<string, string> = { "Content-Type": "application/json" };
